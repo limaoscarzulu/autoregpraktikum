@@ -1,0 +1,79 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath, graphicx, geometry}
+\usepackage{hyperref, caption, subcaption}
+
+
+\usepackage{typearea}
+\areaset{160mm}{250mm}
+
+\newcommand{\vcenteredinclude}[1]{\begingroup
+\setbox0=\hbox{\includegraphics{#1}}%
+\parbox{\wd0}{\box0}\endgroup}
+
+%% better: (general command to vertically center horizontal material)
+\newcommand*{\vcenteredhbox}[1]{\begingroup
+\setbox0=\hbox{#1}\parbox{\wd0}{\box0}\endgroup}
+
+\begin{document}
+\title{\Large\bf Arbeit zum \\ \textit{Praktikum Mess- und Regelungstechnik} \\ Sommersemester 2022}
+\author{Simon Klüpfel, Lukas Zeller \\
+  Robotik und Telematik \\
+  Universität Würzburg\\
+  Am Hubland, D-97074 Würzburg\\
+\small \texttt{lukas.zeller@stud.uni-wuerzburg.de} \\
+\small \texttt{simon.kluepfel@stud.uni-wuerzburg.de}}
+\date{Würzburg, 24.08.2022}
+
+\maketitle
+
+\section{Einleitung}
+In dieser Arbeit befassen wir uns mit dem Robot Operating System, kurz \textit{ROS}, und der 
+Verwendung dessen auf einem einfachen Roboter, dem \textit{Volksbot}. \\
+Der verwendete Roboter ist der \textit{RT3-2} mit zwei passiven Rädern und der \textit{RT-3} mit einem passiven Rad.
+Entwickelt wurden diese vom \textit{Fraunhofer Institut IAIS} aus Sankt Augustin. \\
+Die technischen Daten sind wie folgt: \\
+\vspace{-5mm}
+\begin{center}
+\begin{tabular}{| p{5cm} p{5cm} |}
+  \hline
+  Abmessungen & 580x520x315mm (L x B x H) \\
+  Gewicht & 17kg \\
+  
+  Raddurchmesser & 260x85mm (aktive Räder) \\
+   & 200mm (passive Räder) \\
+  Maximale Geschwindigkeit & 2,2 $\frac{m}{s}$ \\
+  
+  Maximale Zuladung & 25kg \\
+  \hline
+\end{tabular} \\
+\small{ Auszug aus \url{https://www.volksbot.de/rt3-de.php}}
+\end{center}
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{f710small.png}
+  \captionof{figure}{Logitech F710 Joystick}
+  \label{fig:test1}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\linewidth]{rt3small.png}
+  \captionof{figure}{RT3 Volksbot}
+  \label{fig:test2}
+\end{minipage}
+\end{figure}
+
+
+Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem verwendeten
+Laptop installiert. Außerdem lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern.\\
+\newpage
+
+\section{Weitere Abschnitte}
+To do.
+
+\section{Zusammenfassung und Ausblick}
+
+
+\end{document}
+

@@ -1,0 +1,104 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ngerman}
+\usepackage{datetime}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{geometry}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\begin{document}
+\begin{center}
+\text{Praktikum Mess- und Regelungstechnik SoSe2022} \\ \textbf{\Large \color{blue} Cheatsheet ROS} \\ Simon Klüpfel, Lukas Zeller
+\end{center}
+\section*{Initialize and source workspace}
+\begin{enumerate}
+    \item terminal setup ros environment:
+    \begin{verbatim}
+        source /opt/ros/noetic/setup.bash
+    \end{verbatim}
+    \item catkin workspace im home erstellen
+    \begin{verbatim}
+        $ mkdir -p ~/catkin_ws/src
+        $ cd ~/catkin_ws/
+        $ catkin_make
+    \end{verbatim}
+    \item source this workspace
+    \begin{verbatim}
+        source devel/setup.bash
+    \end{verbatim}
+    \item check
+    \begin{verbatim}
+        $ echo $ROS_PACKAGE_PATH 
+    \end{verbatim}
+    \textit{should output:}
+    \begin{verbatim}
+        /home/youruser/catkin_ws/src:/opt/ros/noetic/share
+    \end{verbatim}
+\end{enumerate}
+\section*{Commands}
+\begin{enumerate}
+    \item rospack \textit{allows you to get information
+    about packages} \\
+    \begin{verbatim}
+        $ rospack find roscpp
+    \end{verbatim}
+    \item roscd \textit{ is part of the } rosbash \textit{suite. It allows you to change directory} \\
+    \begin{verbatim}
+        $ roscd roscpp/subdir
+    \end{verbatim}
+    \item pwd \textit{see current directory}
+    \item rosls \textit{allows you to directly ls in a package by name rather than by absolute path}
+
+    \item Creating packages
+    \begin{verbatim}
+        $ cd yourcatkinworkspace/src
+        $ catkin_create_pkg packagename pkgdependency1 pkgdependency2
+    \end{verbatim}
+    \item Building packages/rebuild workspace
+    \begin{verbatim}
+        $ cd yourcatkinworkspace/src
+        $ catkin make
+        ## source workspace first! ##
+        package.xml file provides meta inforamtion about the package
+    \end{verbatim}
+    \item Starting roscore (\textit{Terminal is then occupied!})
+    \begin{verbatim}
+        $ roscore
+    \end{verbatim}
+    \item Display information about the ROS nodes that are currently running
+    \begin{verbatim}
+        $ rosnode list
+    \end{verbatim}
+    \textit{should output:}
+    \begin{verbatim}
+        rosout ....
+    \end{verbatim}
+\end{enumerate} 
+\section*{Dictionary}
+\begin{enumerate}
+    \item Nodes \textit{is an executable that uses ROS to communicate with other nodes} 
+    \item Messages \textit{ROS data type used when subscribing or publishing to a topic}
+    \item Topics \textit{Nodes can publish messages to a topic as well as subscribe to a topic to receive messages}
+    \item Master \textit{Name service for ROS (i.e. helps nodes to find each other)}
+    \item rosout \textit{ROS equivalent for stdout/stderr}
+    \item roscore \textit{Master + rosout + parameter server (parameter server will be introduced later)}
+\end{enumerate}
+\section*{Good to know}
+\begin{enumerate}
+    \item LAN-Config: (\textit{in Ubuntu Network Settings})\\
+    Address: 192.168.0.55, Netmask: 255.255.255.0
+    \item Append AMCL Parameters:
+    \textit{ go to:} \begin{verbatim} amcl_diff_cfg.yaml location: ~/catkin_ws/src/volksbot/launch/config \end{verbatim}
+    \item Origin in RViz:
+    \textit{ [-42.400000, -20.000000, 0.000000]}
+\end{enumerate}
+\end{document}

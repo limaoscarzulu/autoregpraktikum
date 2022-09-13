@@ -26,7 +26,7 @@
 
 \maketitle
 
-\section{Einleitung}
+\section{Einleitung und Aufsetzen des Volksbot-Roboters}
 In dieser Arbeit befassen wir uns mit dem Robot Operating System, kurz \textit{ROS}, und der 
 Verwendung dessen auf einem einfachen Roboter, dem \textit{Volksbot}. \\
 Der verwendete Roboter ist der \textit{RT3-2} mit zwei passiven Rädern und der \textit{RT-3} mit einem passiven Rad.
@@ -48,32 +48,30 @@ Die technischen Daten sind wie folgt: \\
 \end{tabular} \\
 \small{ Auszug aus \url{https://www.volksbot.de/rt3-de.php}}
 \end{center}
-\begin{figure}
-\centering
-\begin{minipage}{.5\textwidth}
-  \centering
-  \includegraphics[width=.4\linewidth]{f710small.png}
-  \captionof{figure}{Logitech F710 Joystick}
-  \label{fig:test1}
-\end{minipage}
-\begin{minipage}{.5\textwidth}
-  \centering
-  \includegraphics[width=.4\linewidth]{rt3small.png}
-  \captionof{figure}{RT3 Volksbot}
-  \label{fig:test2}
-\end{minipage}
-\end{figure}
-
-
 Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem verwendeten
-Laptop installiert. Außerdem lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern.\\
+Laptop installiert. Außerdem lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern. 
+Wir verwenden sowohl vorgegebene ROS-Nodes, die uns von Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die wir selbst erstellt beziehungsweise
+geändert haben. 
+
 \newpage
 
-\section{Weitere Abschnitte}
-To do.
+\section{GMapping mit dem Volksbot}
+Als erstes erstellen wir nach dem Vertrautmachen mit dem Roboter und der Entwicklunsumgebung eine Karte des Informatikgebäudes. 
+Dies geschieht mit dem Onboard-Laserscanner und dem vorgegebenen GMapping-Algorithmus.
 
-\section{Zusammenfassung und Ausblick}
+todo: plots einfügen, kommentieren
 
+\section{AMCL-Lokalisierung}
+todo: vergleich AMCL-Odometrie
 
+\section{Pfadverfolgung}
+Pfade vergleichen, was gut, was schlecht, eventuell Code-Kommentare 
+
+\section{Auswertung}
+todo: 
+Testen Sie den Regler mit dem aufgenommenen Pfad aus dem Informatikgebäude. Vergleichen Sie das Verhalten, wenn einmal die Odometrie und einmal die von AMCL bestimmten
+Positionen als Messwerte für die Regelung verwendet werden.
+
+also: plots, kommentare, was ist besser, was schlechter?
 \end{document}
 

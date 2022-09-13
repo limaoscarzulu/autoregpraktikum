@@ -128,3 +128,4 @@ nodes2020/volksbot/src/SupportClasses/CTimestamp.cpp
 nodes2020/volksbot/src/SupportClasses/CTimestamp.h
 nodes2020/volksbot/src/SupportClasses/Enums.h
 nodes2020/volksbot/srv/velocities.srv
+Kinematic_Time-invariant_Control_of_a_2D_Nonholonomic_Vehicle.pdf

@@ -129,3 +129,18 @@ nodes2020/volksbot/src/SupportClasses/CTimestamp.h
 nodes2020/volksbot/src/SupportClasses/Enums.h
 nodes2020/volksbot/srv/velocities.srv
 Kinematic_Time-invariant_Control_of_a_2D_Nonholonomic_Vehicle.pdf
+catkin_ws
+Plots/save/GegebenePfadeAMCL/achtAMCLposAMCL.txt
+Plots/save/GegebenePfadeAMCL/achtAMCLposODOM.txt
+Plots/save/GegebenePfadeAMCL/quadratAMCLposAMCL.txt
+Plots/save/GegebenePfadeAMCL/quadratAMCLposOdom.txt
+Plots/save/GegebenePfadeOdom/achtOdomposAMCL.txt
+Plots/save/GegebenePfadeOdom/achtOdomposOdom.txt
+Plots/save/GegebenePfadeOdom/quadratOdomposAMCL.txt
+Plots/save/GegebenePfadeOdom/quadratOdomposOdom.txt
+Plots/save/Mapaufnahmepfade/mapaufnahmepfadAMCL.dat
+Plots/save/Mapaufnahmepfade/mapaufnahmepfadOdom.dat
+Plots/save/Simulierte Pfade/achtSimu.txt
+Plots/save/Simulierte Pfade/shapeSimu.txt
+Plots/save/Simulierte Pfade/quadratSimu.txt
+Plots/save/Simulierte Pfade/circleSimu.txt

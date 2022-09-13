@@ -59,7 +59,11 @@ geändert haben.
 Als erstes erstellen wir nach dem Vertrautmachen mit dem Roboter und der Entwicklunsumgebung eine Karte des Informatikgebäudes. 
 Dies geschieht mit dem Onboard-Laserscanner und dem vorgegebenen GMapping-Algorithmus.
 
+KOM: das ist falsch. zuerst fahren wir daten in eine Bag und machen aus der bag ne map
+
 todo: plots einfügen, kommentieren
+
+KOM: wir brauchen dazu keine plots??? Wir haben nicht mal relevante. Ein bild der karte die wir rausbekommen haben reicht
 
 \section{AMCL-Lokalisierung}
 todo: vergleich AMCL-Odometrie
@@ -67,11 +71,15 @@ todo: vergleich AMCL-Odometrie
 \section{Pfadverfolgung}
 Pfade vergleichen, was gut, was schlecht, eventuell Code-Kommentare 
 
+KOM: du musst auf die Koordinatensysteme von AMCL/Odom eingehen. Das ist das Hauptthema im Code.
+
 \section{Auswertung}
 todo: 
 Testen Sie den Regler mit dem aufgenommenen Pfad aus dem Informatikgebäude. Vergleichen Sie das Verhalten, wenn einmal die Odometrie und einmal die von AMCL bestimmten
 Positionen als Messwerte für die Regelung verwendet werden.
 
 also: plots, kommentare, was ist besser, was schlechter?
+
+KOM: An Plots brauchen wir hier Simulation, den rohen Pfad, AMCL, Odom, und Bilder was er IRL jeweils getan hat. Die Bilder kann ich noch machen.
 \end{document}
 

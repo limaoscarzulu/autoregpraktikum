@@ -1,18 +1,11 @@
 \documentclass[11pt,a4paper]{article}
-\usepackage{amsmath, graphicx, geometry}
+\usepackage{amsmath, graphicx, geometry, float}
 \usepackage{hyperref, caption, subcaption}
 
 
 \usepackage{typearea}
 \areaset{160mm}{250mm}
 
-\newcommand{\vcenteredinclude}[1]{\begingroup
-\setbox0=\hbox{\includegraphics{#1}}%
-\parbox{\wd0}{\box0}\endgroup}
-
-%% better: (general command to vertically center horizontal material)
-\newcommand*{\vcenteredhbox}[1]{\begingroup
-\setbox0=\hbox{#1}\parbox{\wd0}{\box0}\endgroup}
 
 \begin{document}
 \title{\Large\bf Arbeit zum \\ \textit{Praktikum Mess- und Regelungstechnik} \\ Sommersemester 2022}
@@ -26,7 +19,7 @@
 
 \maketitle
 
-\section{Einleitung und Aufsetzen des Volksbot-Roboters}
+\section{Einleitungzum Volksbot-Roboter}
 In dieser Arbeit befassen wir uns mit dem Robot Operating System, kurz \textit{ROS}, und der 
 Verwendung dessen auf einem einfachen Roboter, dem \textit{Volksbot}. \\
 Der verwendete Roboter ist der \textit{RT3-2} mit zwei passiven Rädern und der \textit{RT-3} mit einem passiven Rad.
@@ -55,15 +48,43 @@ geändert haben.
 
 \newpage
 
-\section{GMapping mit dem Volksbot}
-Als erstes erstellen wir nach dem Vertrautmachen mit dem Roboter und der Entwicklunsumgebung eine Karte des Informatikgebäudes. 
-Dies geschieht mit dem Onboard-Laserscanner und dem vorgegebenen GMapping-Algorithmus.
+\section{Kartierung mit GMapping}
+Wir starten zuerst die Node zur Kommunikation mit dem Roboter: \begin{verbatim}
+  roslaunch volksbot messtechnikpraktikum.launch
+\end{verbatim}
+Um den Roboter zu steuern mit dem Controller benötigen wir die zugehörige Node: \begin{verbatim}
+  roslaunch volksbot localjoystick.launch
+\end{verbatim}
+Nun erstellen wir eine \textit{rosbag}, die alle Topics des Roboters aufzeichnet: \begin{verbatim}
+  rosbag record -a
+\end{verbatim}
+Um nun eine Karte erstellen zu können, müssen wir die aufgenommene \textit{bag} abspielen. 
+Wichtig hier ist es den Parameter \begin{verbatim}
+  rosparam set use_sim_time true
+\end{verbatim} zu setzen um die Zeit aus dem \textit{clock}-Topic zu nutzen anstelle der globalen Systemzeit.
+Nun kann man aus den Laserscanner-Daten, also hauptsächlich dem \textit{LMS}-Topic, die Map
+erstellen. Hierzu starten wir das GMapping-Tool via \begin{verbatim}
+  roslaunch volksbot messtechnikgmapping.launch
+\end{verbatim}
+Die Bag kann dann abgespielt werden mit \begin{verbatim}
+  rosbag play filename.bag --clock
+\end{verbatim}
+Der \textit{clock}-Befehl am Ende ist wichtig um die Aufnahmen der \textit{rosbag} mit einem 
+Zeitstempel zu versehen damit der Roboter sie nicht verwirft. 
+Startet man nun RViz kann man über das \textit{map}-Topic den Aufbau der Map betrachten.
+Um diese zu speichern startet man eine \textit{ROS-node} die das \textit{map}-Topic in
+eine Datei speichert. 
 
-KOM: das ist falsch. zuerst fahren wir daten in eine Bag und machen aus der bag ne map
+\begin{figure}[H]
+  \caption*{Abbildung 1: Aufgezeichnete Karte des Informatik-Untergeschosses}
+  \includegraphics[scale = 0.3, angle = 90]{map.pdf}
+  \centering
+\end{figure}
 
-todo: plots einfügen, kommentieren
+% KOM: das ist falsch. zuerst fahren wir daten in eine Bag und machen aus der bag ne map
 
-KOM: wir brauchen dazu keine plots??? Wir haben nicht mal relevante. Ein bild der karte die wir rausbekommen haben reicht
+
+% KOM: wir brauchen dazu keine plots??? Wir haben nicht mal relevante. Ein bild der karte die wir rausbekommen haben reicht
 
 \section{AMCL-Lokalisierung}
 todo: vergleich AMCL-Odometrie
@@ -71,7 +92,7 @@ todo: vergleich AMCL-Odometrie
 \section{Pfadverfolgung}
 Pfade vergleichen, was gut, was schlecht, eventuell Code-Kommentare 
 
-KOM: du musst auf die Koordinatensysteme von AMCL/Odom eingehen. Das ist das Hauptthema im Code.
+% KOM: du musst auf die Koordinatensysteme von AMCL/Odom eingehen. Das ist das Hauptthema im Code.
 
 \section{Auswertung}
 todo: 
@@ -80,6 +101,6 @@ Positionen als Messwerte für die Regelung verwendet werden.
 
 also: plots, kommentare, was ist besser, was schlechter?
 
-KOM: An Plots brauchen wir hier Simulation, den rohen Pfad, AMCL, Odom, und Bilder was er IRL jeweils getan hat. Die Bilder kann ich noch machen.
+% KOM: An Plots brauchen wir hier Simulation, den rohen Pfad, AMCL, Odom, und Bilder was er IRL jeweils getan hat. Die Bilder kann ich noch machen.
 \end{document}
 

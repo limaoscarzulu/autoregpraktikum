@@ -19,13 +19,13 @@
 
 \maketitle
 
-\section{Einleitungzum Volksbot-Roboter}
+\section{Einleitung zum Volksbot-Roboter}
 In dieser Arbeit befassen wir uns mit dem Robot Operating System, kurz \textit{ROS}, und der 
 Verwendung dessen auf einem einfachen Roboter, dem \textit{Volksbot}. \\
 Der verwendete Roboter ist der \textit{RT3-2} mit zwei passiven Rädern und der \textit{RT-3} mit einem passiven Rad.
 Entwickelt wurden diese vom \textit{Fraunhofer Institut IAIS} aus Sankt Augustin. \\
 Die technischen Daten sind wie folgt: \\
-\vspace{-5mm}
+\vspace{1mm}
 \begin{center}
 \begin{tabular}{| p{5cm} p{5cm} |}
   \hline
@@ -41,11 +41,17 @@ Die technischen Daten sind wie folgt: \\
 \end{tabular} \\
 \small{ Auszug aus \url{https://www.volksbot.de/rt3-de.php}}
 \end{center}
+\vspace{5mm}
 Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem verwendeten
 Laptop installiert. Außerdem lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern. 
 Wir verwenden sowohl vorgegebene ROS-Nodes, die uns von Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die wir selbst erstellt beziehungsweise
 geändert haben. 
-
+\vspace{5mm}
+\begin{figure}[H]
+  \caption*{Abbildung 1: Volksbot RT3 und Logitech G710-Gamecontroller}
+  \includegraphics[]{robotandcontroller.pdf}
+  \centering
+\end{figure}
 \newpage
 
 \section{Kartierung mit GMapping}
@@ -76,18 +82,56 @@ Um diese zu speichern startet man eine \textit{ROS-node} die das \textit{map}-To
 eine Datei speichert. 
 
 \begin{figure}[H]
-  \caption*{Abbildung 1: Aufgezeichnete Karte des Informatik-Untergeschosses}
+  \caption*{Abbildung 2: Aufgezeichnete Karte des Informatik-Untergeschosses}
   \includegraphics[scale = 0.3, angle = 90]{map.pdf}
   \centering
 \end{figure}
 
 % KOM: das ist falsch. zuerst fahren wir daten in eine Bag und machen aus der bag ne map
-
-
 % KOM: wir brauchen dazu keine plots??? Wir haben nicht mal relevante. Ein bild der karte die wir rausbekommen haben reicht
 
 \section{AMCL-Lokalisierung}
-todo: vergleich AMCL-Odometrie
+Um aus der Odometrie einen Pfad zu plotten erstellen wir ein eigenes ROS-Node. Das Node-Package heißt \verb|data_saver|, 
+die Node an sich \texttt{listener}. Es ist Subscriber des Odometrie-Topics und speichert die empfangenen Daten 
+in einer Datei im Format \verb|Xpos_Ypos| \\
+Es hat zwei Modi, wie es diese Daten speichern kann:
+\begin{center}
+\texttt{rel}: Koordinaten im Pfad sind relativ zum Roboter \\
+\texttt{abs}: Koordinaten sind absolut aus dem AMCL-Frame \\
+\end{center}
+Man starte sie mit dem gewählten Modus:
+\begin{verbatim}
+  rosrun data_saver listener_mode := "abs || rel"
+\end{verbatim}
+Die ROS-Node speichert dann AMCL- und Odometrie-Daten in separaten Dateien.
+
+Um AMCL zu starten nutzen wir die vorgegebene Launchfile:
+\begin{verbatim}
+roslaunch volksbot messtechnikamcl.launch
+\end{verbatim}
+Bei Betrachten des launchfile-Codes fällt auf dass zusammen mit dem AMCL-Node ein \verb|map_server|-Node gestartet
+wird, welches eine vorgegebene Map published. Wir wollen aber unsere eigene Map verwenden, weswegen wir diese Zeile
+auskommentieren und stattdessen eine eigene \verb|map_server|-Node starten, welches die Map aus \textit{GMapping}
+published: \begin{verbatim}
+rosrun map_server map_server map.yaml
+\end{verbatim}
+Außerdem muss im Configuration-File von AMCL noch eingefügt werden, dass AMCL auf ein Map-Topic subscriben soll,
+und wie dieses Topic heißen soll. \\
+In RViz muss man nun noch die Position des Roboters festlegen. Dazu setzt man die Map und das \verb|amcl_pose|-Topic
+sichtbar, in unserem Fall mittels einer .config-File, die man über \begin{verbatim}
+rviz -d config.rviz
+\end{verbatim}
+ausführt.
+In RViz drückt man nun den \verb|2D-Pose-Estimate|-Button, dann an die Stelle der Karte wo der Roboter am Anfang steht,
+hält dabei gedrückt, und bewegt die Maus in die Richtung in die die Roboterlängsachse zeigt. Zum Bestätigen
+lässt man den Mausbutton los. \\
+Um die \texttt{rosbag}-Datei nun abspielen zu können, führe man folgenden Befehl im Terminal aus:
+\begin{verbatim}
+rosbag play file.bag --clock
+\end{verbatim}
+Der Roboter bewegt sich nun in RViz virtuell auf der Karte und lokalisiert sich dabei mit AMCL.
+
+
 
 \section{Pfadverfolgung}
 Pfade vergleichen, was gut, was schlecht, eventuell Code-Kommentare 

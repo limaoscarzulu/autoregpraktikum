@@ -1,11 +1,9 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage{amsmath, graphicx, geometry, float}
 \usepackage{hyperref, caption, subcaption}
-
-
 \usepackage{typearea}
-\areaset{160mm}{250mm}
 
+\areaset{160mm}{250mm}
 
 \begin{document}
 \title{\Large\bf Arbeit zum \\ \textit{Praktikum Mess- und Regelungstechnik} \\ Sommersemester 2022}
@@ -103,8 +101,6 @@ Man starte sie mit dem gewählten Modus:
 \begin{verbatim}
   rosrun data_saver listener_mode := "abs || rel"
 \end{verbatim}
-Die ROS-Node speichert dann AMCL- und Odometrie-Daten in separaten Dateien.
-
 Um AMCL zu starten nutzen wir die vorgegebene Launchfile:
 \begin{verbatim}
 roslaunch volksbot messtechnikamcl.launch
@@ -131,10 +127,14 @@ rosbag play file.bag --clock
 \end{verbatim}
 Der Roboter bewegt sich nun in RViz virtuell auf der Karte und lokalisiert sich dabei mit AMCL.
 
-
+\begin{figure}[H]
+  \caption*{Abbildung 3: RViz-Screenshot: Roboter lokalisiert sich in der Karte mittels AMCL}
+  \includegraphics[scale = 0.25]{amcllocalisation.png}
+  \centering
+\end{figure}
 
 \section{Pfadverfolgung}
-Pfade vergleichen, was gut, was schlecht, eventuell Code-Kommentare 
+% KOM: du musst auf die Koordinatensysteme von AMCL/Odom eingehen. Das ist das Hauptthema im Code.
 
 % KOM: du musst auf die Koordinatensysteme von AMCL/Odom eingehen. Das ist das Hauptthema im Code.
 
@@ -146,5 +146,8 @@ Positionen als Messwerte für die Regelung verwendet werden.
 also: plots, kommentare, was ist besser, was schlechter?
 
 % KOM: An Plots brauchen wir hier Simulation, den rohen Pfad, AMCL, Odom, und Bilder was er IRL jeweils getan hat. Die Bilder kann ich noch machen.
+
+
+
 \end{document}
 

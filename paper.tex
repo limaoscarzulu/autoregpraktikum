@@ -40,7 +40,7 @@ Die technischen Daten sind wie folgt: \\
 \small{ Auszug aus \url{https://www.volksbot.de/rt3-de.php}}
 \end{center}
 \vspace{5mm}
-Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem verwendeten
+*Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem verwendeten
 Laptop installiert. Außerdem lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern. 
 Wir verwenden sowohl vorgegebene ROS-Nodes, die uns von Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die wir selbst erstellt beziehungsweise
 geändert haben. 
@@ -128,7 +128,7 @@ rosbag play file.bag --clock
 Der Roboter bewegt sich nun in RViz virtuell auf der Karte und lokalisiert sich dabei mit AMCL.
 
 \begin{figure}[H]
-  \caption*{Abbildung 3: RViz-Screenshot: Roboter lokalisiert sich in der Karte mittels AMCL}
+*  \caption*{Abbildung 3: RViz-Screenshot: Roboter lokalisiert sich in der Karte mittels AMCL}
   \includegraphics[scale = 0.25]{amcllocalisation.png}
   \centering
 \end{figure}
@@ -172,7 +172,7 @@ rosrun robo_pathing robo_simu _file:="file"
 \section{Auswertung}
 Insgesamt fällt auf dass sich die Fehler bei der Odometrie aufaddieren, während sich die Fehler für die AMCL-Lokalisierung
 auf einem gleichen Level über den gesamten Pfadverfolgungszeitraum bewegen. Der Grund dafür liegt in der fehlenden Korrektur der Odometriedaten, die 
-nicht die Reibung der Reifen oder das Rutschen des Roboters bei schnellen Änderungen der Radgeschwindigkeiten und der Richtung korrigieren können und nur über Iteration die Position bestimmen.
+nicht die Reibung der Reifen oder das Rutschen* des Roboters bei schnellen Änderungen der Radgeschwindigkeiten und der Richtung korrigieren können und nur über Iteration die Position bestimmen.
 Hier liegt die Stärke von AMCL, da die Positionsbestimmung einem konstanten Fehler unterliegt, der zwar anfangs größer sein kann als der der Odometrie,
 sich aber über längere Zeiträume dafür nicht aufaddiert und über weite Strecken konstant bleibt. Bei kleinen Pfadabständen zu Hindernissen kann die Summe der Odometriefehler dazu führen dass 
 der Roboter den vorgegebenen Pfad nicht mehr abfahren kann und an Hindernissen hängen bleibt. Die Stärke der Odometrie liegt in Fahrten 

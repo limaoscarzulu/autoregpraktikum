@@ -94,12 +94,12 @@ die Node an sich \texttt{listener}. Es ist Subscriber des Odometrie-Topics und s
 in einer Datei im Format \verb|Xpos_Ypos| \\
 Es hat zwei Modi, wie es diese Daten speichern kann:
 \begin{center}
-\texttt{rel}: Koordinaten im Pfad sind relativ zum Roboter \\
+\texttt{rel}: Koordinaten im Pfad sind relativ zur Startposition des Roboters \\
 \texttt{abs}: Koordinaten sind absolut aus dem AMCL-Frame \\
 \end{center}
 Man starte sie mit dem gewählten Modus:
 \begin{verbatim}
-  rosrun data_saver listener_mode := "abs || rel"
+  rosrun data_saver listener _mode := "abs || rel"
 \end{verbatim}
 Um AMCL zu starten nutzen wir die vorgegebene Launchfile:
 \begin{verbatim}

@@ -13,7 +13,7 @@
   Am Hubland, D-97074 Würzburg\\
 \small \texttt{lukas.zeller@stud.uni-wuerzburg.de} \\
 \small \texttt{simon.kluepfel@stud.uni-wuerzburg.de}}
-\date{Würzburg, 24.08.2022}
+\date{Würzburg und Easley SC, 20.09.2022}
 
 \maketitle
 
@@ -134,16 +134,50 @@ Der Roboter bewegt sich nun in RViz virtuell auf der Karte und lokalisiert sich 
 \end{figure}
 
 \section{Pfadverfolgung}
-% KOM: du musst auf die Koordinatensysteme von AMCL/Odom eingehen. Das ist das Hauptthema im Code.
+\subsection*{Mit dem realen Roboter}
+Elementar für die Pfadverfolgung ist das richtige Koordinatensystem sowie die richtige Referenz, in unserem Fall $absolut \leftrightarrow relativ$ \\
+Die Punkte des Roboters liegen in einem anderen System als die gegebenen Pfade, daher müssen
+wir die Position des Roboters in dieses System transformieren, wenn wir diese Pfade verwenden wollen. 
+Für absolute Pfade ist dies nicht nötig, da die Koordinatensysteme bereits zueinander passen. 
+Wir geben diese Position an den Controller weiter und publishen dann die Ausgaben des Controllers auf dem 
+selben Topic auf dem auch unser Joystick-Controller die Steuerbefehle an den Roboter weitergibt. 
+Wir legen mit einer Modiswitch fest ob AMCL oder Odometrie verwendet werden soll. Die AMCL-Node muss 
+bei Bedarf separat zugeschaltet werden und wird bei unserem Pfadverfolgungs-Code nicht mit aufgerufen.
+Die node startet mit \begin{verbatim}
+rosrun robo_pathing robo_drive_file="file"_mode:="amcl || odom"_coord:="rel || abs"
+\end{verbatim}
+Für AMCL (\textit{if required}):
+\begin{verbatim}
+roslaunch volksbot messtechnikamcl.launch
+\end{verbatim}
+Wir benutzen den Pfad aus unserer \verb|data_saver|-AMCL-Node im \texttt{abs}-mode als Datei
+für das \verb|robo_drive.cpp|-Node zum Abfahren mit dem Volksbot. Dies ist im AMCL-\texttt{"abs"}-Mode. \\
+Als Terminalbefehl sieht dies dann folgendermaßen aus:
+\begin{verbatim}
+rosrun robo_pathing robo_drive_file:="mapaufnahmenAMCL.dat"_mode:="amcl"_coord:="abs"
+\end{verbatim}
 
-% KOM: du musst auf die Koordinatensysteme von AMCL/Odom eingehen. Das ist das Hauptthema im Code.
+\subsection*{Simulation}
+Der Code der aus der Position des Roboters und der Position des nächsten Punkts die Radgeschwindigkeit ausgibt
+ist bereits gegeben. Wir müssen die Bewegung des Roboters nach einem Zeitschritt $\Delta t$ simulieren.
+Unser Ansatz dabei ist: Wenn die Winkelgeschwindigkeit des Roboters größer als ein Schwellenwert ist, fährt der Roboter einen 
+Kreisausschnitt, angefangen an seiner momentanen Position. Die Endposition daraus berechnen wir und
+geben sie an den Controller zurück. Wenn die Winkelgeschwindigkeit kleiner ist als der Schwellenwert
+approximieren wir die Bewegung mit einer geraden Linie. Der Code dazu befindet sich in der Datei \verb|robo_simu.cpp|.
+Wir übergeben den zu fahrenden Pfad als Parameter. Die ROS-Node startet dann mit \begin{verbatim}
+rosrun robo_pathing robo_simu _file:="file"
+\end{verbatim}
+\newpage
 
 \section{Auswertung}
-todo: 
-Testen Sie den Regler mit dem aufgenommenen Pfad aus dem Informatikgebäude. Vergleichen Sie das Verhalten, wenn einmal die Odometrie und einmal die von AMCL bestimmten
-Positionen als Messwerte für die Regelung verwendet werden.
+Insgesamt fällt auf dass sich die Fehler bei der Odometrie aufaddieren, während sich die Fehler für die AMCL-Lokalisierung
+auf einem gleichen Level über den gesamten Pfadverfolgungszeitraum bewegen. Der Grund dafür liegt in der fehlenden Korrektur der Odometriedaten, die 
+nicht die Reibung der Reifen oder das Rutschen des Roboters bei schnellen Änderungen der Radgeschwindigkeiten und der Richtung korrigieren können und nur über Iteration die Position bestimmen.
+Hier liegt die Stärke von AMCL, da die Positionsbestimmung einem konstanten Fehler unterliegt, der zwar anfangs größer sein kann als der der Odometrie,
+sich aber über längere Zeiträume dafür nicht aufaddiert und über weite Strecken konstant bleibt. Bei kleinen Pfadabständen zu Hindernissen kann die Summe der Odometriefehler dazu führen dass 
+der Roboter den vorgegebenen Pfad nicht mehr abfahren kann und an Hindernissen hängen bleibt. Die Stärke der Odometrie liegt in Fahrten 
+die die oben genannten Fehler klein halten, z.B. ein langsames Abfahren eines Pfades mit wenig Kurven.
 
-also: plots, kommentare, was ist besser, was schlechter?
 
 % KOM: An Plots brauchen wir hier Simulation, den rohen Pfad, AMCL, Odom, und Bilder was er IRL jeweils getan hat. Die Bilder kann ich noch machen.
 

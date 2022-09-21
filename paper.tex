@@ -114,7 +114,7 @@ rosrun map_server map_server map.yaml
 Außerdem muss im Configuration-File von AMCL noch eingefügt werden, dass AMCL auf ein Map-Topic subscriben soll,
 und wie dieses Topic heißen soll. \\
 In RViz muss man nun noch die Position des Roboters festlegen. Dazu setzt man die Map und das \verb|amcl_pose|-Topic
-sichtbar, in unserem Fall mittels einer .config-File, die man über \begin{verbatim}
+sichtbar, in unserem Fall mittels einer config-File, die man über \begin{verbatim}
 rviz -d config.rviz
 \end{verbatim}
 ausführt.
@@ -144,7 +144,7 @@ selben Topic auf dem auch unser Joystick-Controller die Steuerbefehle an den Rob
 Wir legen mit einer Modiswitch fest ob AMCL oder Odometrie verwendet werden soll. Die AMCL-Node muss 
 bei Bedarf separat zugeschaltet werden und wird bei unserem Pfadverfolgungs-Code nicht mit aufgerufen.
 Die node startet mit \begin{verbatim}
-rosrun robo_pathing robo_drive_file="file"_mode:="amcl || odom"_coord:="rel || abs"
+rosrun robo_pathing robo_drive _file="file"_mode:="amcl || odom"_coord:="rel || abs"
 \end{verbatim}
 Für AMCL (\textit{if required}):
 \begin{verbatim}
@@ -193,23 +193,29 @@ Die Stärke der Odometrie liegt in Fahrten die die oben genannten Fehler klein h
 
 \subsection*{Vergleich der Fahrten mit Odometrie und AMCL}
 \begin{figure}[H]
-  \caption*{Abbildung 6: Abfahren einer liegenden Acht mit AMCL, Einheit [m]}
-  \includegraphics[scale = 0.45]{Plots/better ones/amclamclacht.png}
-  \vspace{-20mm}
-\\ Man erkennt hier deutlich dass der Roboter bei Verwendung von AMCL genauer zur Startposition zurückfindet
-  \caption*{Abbildung 7: Abfahren einer liegenden Acht mit Odometrie, Einheit [m]}
-  \includegraphics[scale = 0.45]{Plots/better ones/odomamclacht.png}
-  \centering
-\end{figure}
-\begin{figure}[H]
-  \caption*{Abbildung 8: Realer Pfad des Roboters unter Verwendung von AMCL, angedeutet mit farbigen Streifen für die rechte und linke Seite des Roboters}
+  \caption*{Abbildung 8: Realer Pfad des Roboters unter Verwendung von AMCL, angedeutet mit farbigen Streifen für das rechte und linke Rad des Roboters}
   \includegraphics[scale = 0.25]{AMCLAcht.png}
-    \caption*{Abbildung 9: Realer Pfad des Roboters unter Verwendung von Odometrie, angedeutet mit farbigen Streifen für die rechte und linke Seite des Roboters}
+    \caption*{Abbildung 9: Realer Pfad des Roboters unter Verwendung von Odometrie, angedeutet mit farbigen Streifen für das rechte und linke Rad des Roboters}
     \includegraphics[scale = 0.25]{odomAcht.png}
     \centering
   \end{figure}
 
-Man beachte den großen Offset der Linien in der Mitte (sprich bei der Startposition) bei der Odometrie.
+Wir liesen den Roboter eine Acht jeweils unter der verwendung von AMCL/Odometrie-Lokalisierung nachfahren. Dabei liesen wir ihn über eine Modifikation zum driving code alle 3 Sekunden anhalten, sodass wir Zeit hatten den Pfad des linken und rechten Rades zu Markieren. Die Bilder sind nachbearbeitet um diese besser sichtbar zu machen. Auch wurde die Startposition mit roten, die Endposition mit weißen Strichen markiert. Es ist zu erkennen, das diese bei der verwendung von AMCL deutlich näher beinander im  Vergleich zum Odometrie-Fall. Idealerweise sollten sie exakt aufeinander liegen, den so ist ist der Pfad beschrieben. Das sie dies nicht tun leigt zum einen daran, das im Code des Giovanni-Controllers der Pfad schon als vollständig erachtet wird wenn man in kurzer Reichweite des letzen anzufahrenden Punktes ist.
+Da wir den Roboter auf der Schwarzen Linie, mit einer Ausrichtung im rechten Winkel zu dieser haben starten lassen sollte diese bei idealer Pfadverfolgung die Symmetrieachse der Acht darstellen. Leider sind die Bilder durch unsere Aufnahmemöglichkeiten etwas verzerrt, jedoch ist noch gut zu erkennen das dies bei AMCL viel mehr der Fall ist als bei der Odometrie Lokalisierung, wo der großteil der unteren Hälfte der Acht auf der linken Seite der schwarzen Linie liegt.
+Schon aus dieser groben Betrachtung kann man schließen das die AMCL-Lokalisierung deutlich besser in der Realen Welt funktioniert als Odometrie.
+
+\begin{figure}[H]
+  \caption*{Abbildung 6: Abfahren einer liegenden Acht mit AMCL, Einheit [m]}
+  \includegraphics[scale = 0.45]{Plots/better ones/amclamclacht.png}
+  \vspace{-20mm}
+\\ Dies ist ein Plot der Position aus der AMCL Lokalisierung während der Roboter mit diesen Daten eine Acht abfährt.
+  \caption*{Abbildung 7: Abfahren einer liegenden Acht mit Odometrie, aufnehmen der Position anhand der AMCL Lokalisierung, Einheit [m]}
+  \includegraphics[scale = 0.45]{Plots/better ones/odomamclacht.png}
+  \vspace{-20mm}
+\\ Dies ist ein Plot der Position aus der AMCL Lokalisierung während der Roboter anhand der Odometrie eine Acht abfährt. Wie vorher erörtert können wir die AMCL lokalisierung als gutes analog zur Position in der echten Welt verwenden. Man erkennt einen deutlichen unterschied zum vorherigen Plot, vorallem das hier die Start und Endposition weniger übereinstimmen.
+  \centering
+\end{figure}
+
 % KOM: An Plots brauchen wir hier Simulation, den rohen Pfad, AMCL, Odom, und Bilder was er IRL jeweils getan hat. Die Bilder kann ich noch machen.
 
 

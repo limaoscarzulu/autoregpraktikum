@@ -128,7 +128,7 @@ rosbag play file.bag --clock
 Der Roboter bewegt sich nun in RViz virtuell auf der Karte und lokalisiert sich dabei mit AMCL.
 
 \begin{figure}[H]
-*  \caption*{Abbildung 3: RViz-Screenshot: Roboter lokalisiert sich in der Karte mittels AMCL}
+  \caption*{Abbildung 3: RViz-Screenshot: Roboter lokalisiert sich in der Karte mittels AMCL}
   \includegraphics[scale = 0.25]{amcllocalisation.png}
   \centering
 \end{figure}
@@ -158,7 +158,7 @@ rosrun robo_pathing robo_drive_file:="mapaufnahmenAMCL.dat"_mode:="amcl"_coord:=
 \end{verbatim}
 
 \subsection*{Simulation}
-Der Code der aus der Position des Roboters und der Position des nächsten Punkts die Radgeschwindigkeit ausgibt
+Der Code der aus der Position des Roboters und der Position des nächsten Punkts die Rad-geschwindigkeit ausgibt
 ist bereits gegeben. Wir müssen die Bewegung des Roboters nach einem Zeitschritt $\Delta t$ simulieren.
 Unser Ansatz dabei ist: Wenn die Winkelgeschwindigkeit des Roboters größer als ein Schwellenwert ist, fährt der Roboter einen 
 Kreisausschnitt, angefangen an seiner momentanen Position. Die Endposition daraus berechnen wir und
@@ -173,12 +173,43 @@ rosrun robo_pathing robo_simu _file:="file"
 Insgesamt fällt auf dass sich die Fehler bei der Odometrie aufaddieren, während sich die Fehler für die AMCL-Lokalisierung
 auf einem gleichen Level über den gesamten Pfadverfolgungszeitraum bewegen. Der Grund dafür liegt in der fehlenden Korrektur der Odometriedaten, die 
 nicht die Reibung der Reifen oder das Rutschen* des Roboters bei schnellen Änderungen der Radgeschwindigkeiten und der Richtung korrigieren können und nur über Iteration die Position bestimmen.
+\begin{figure}[H]
+    \caption*{Abbildung 4: Pfadaufnahme der Karte mittels Odometrie, Einheit [m]}
+    \includegraphics[scale = 0.6]{Plots/better ones/mapaufnahmeODOM.png}
+    \centering
+\end{figure}
+\vspace{-25mm}
 Hier liegt die Stärke von AMCL, da die Positionsbestimmung einem konstanten Fehler unterliegt, der zwar anfangs größer sein kann als der der Odometrie,
 sich aber über längere Zeiträume dafür nicht aufaddiert und über weite Strecken konstant bleibt. Bei kleinen Pfadabständen zu Hindernissen kann die Summe der Odometriefehler dazu führen dass 
-der Roboter den vorgegebenen Pfad nicht mehr abfahren kann und an Hindernissen hängen bleibt. Die Stärke der Odometrie liegt in Fahrten 
-die die oben genannten Fehler klein halten, z.B. ein langsames Abfahren eines Pfades mit wenig Kurven.
+der Roboter den vorgegebenen Pfad nicht mehr abfahren kann und an Hindernissen hängen bleibt.
+\begin{figure}[H]
+    \caption*{Abbildung 5: Pfadaufnahme der Karte mittels AMCL, Einheit [m]}
+    \includegraphics[scale = 0.6]{Plots/better ones/mapaufnahmeAMCL.png}
+    \centering
+\end{figure}
+\vspace{-25mm}
 
+Die Stärke der Odometrie liegt in Fahrten die die oben genannten Fehler klein halten, z.B. ein langsames Abfahren eines Pfades mit wenig Kurven.
 
+\subsection*{Vergleich der Fahrten mit Odometrie und AMCL}
+\begin{figure}[H]
+  \caption*{Abbildung 6: Abfahren einer liegenden Acht mit AMCL, Einheit [m]}
+  \includegraphics[scale = 0.45]{Plots/better ones/amclamclacht.png}
+  \vspace{-20mm}
+\\ Man erkennt hier deutlich dass der Roboter bei Verwendung von AMCL genauer zur Startposition zurückfindet
+  \caption*{Abbildung 7: Abfahren einer liegenden Acht mit Odometrie, Einheit [m]}
+  \includegraphics[scale = 0.45]{Plots/better ones/odomamclacht.png}
+  \centering
+\end{figure}
+\begin{figure}[H]
+  \caption*{Abbildung 8: Realer Pfad des Roboters unter Verwendung von AMCL, angedeutet mit farbigen Streifen für die rechte und linke Seite des Roboters}
+  \includegraphics[scale = 0.25]{AMCLAcht.png}
+    \caption*{Abbildung 9: Realer Pfad des Roboters unter Verwendung von Odometrie, angedeutet mit farbigen Streifen für die rechte und linke Seite des Roboters}
+    \includegraphics[scale = 0.25]{odomAcht.png}
+    \centering
+  \end{figure}
+
+Man beachte den großen Offset der Linien in der Mitte (sprich bei der Startposition) bei der Odometrie.
 % KOM: An Plots brauchen wir hier Simulation, den rohen Pfad, AMCL, Odom, und Bilder was er IRL jeweils getan hat. Die Bilder kann ich noch machen.
 
 

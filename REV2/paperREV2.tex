@@ -1,9 +1,11 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage{bbm,amsthm,amsfonts,amssymb,amsmath,latexsym,epic,eepic}
-\usepackage{marvosym,graphicx,fancyhdr,bbm}
-\usepackage[dvips]{color}
+\usepackage{marvosym,graphicx,fancyhdr,bbm, hyperref}
+%% \usepackage[dvips]{color}
 \usepackage[rflt]{floatflt}
 \usepackage{colortbl}
+\usepackage[ngerman]{babel}
+
 \definecolor{Grey}{rgb}{0.5,0.5,0.5}
 \definecolor{Red}{rgb}{1.0,0.0,0.0}
 
@@ -81,39 +83,68 @@ General Shit: Was ist unser Roboter, was ist ROS
 Wie funktioiert Odom, mit Mathe und so
 Gmapping kurz vorstellen, wie wir es verwenden
 AMCL vorstellen, wie funktioniert es grob
-Wir haben einen Pfadverfolgungs algo bekommen, wie er GROB funktioniert (Steuergesetzt sagen, macht Linie zw gegebenen Punkten)
-Experimente zur bestimmung der Güte der Pfadverfolgung mit AMCL/Odom -> MESSUNGEN UNABHÄNGIG VONEINANDER!!
+Wir haben einen Pfadverfolgungs algo bekommen, wie er GROB funktioniert 
+(Steuergesetzt sagen, macht Linie zw gegebenen Punkten)
+Experimente zur bestimmung der Güte der Pfadverfolgung mit AMCL/Odom 
+-> MESSUNGEN UNABHÄNGIG VONEINANDER!!
 Zusammenfassung der Ergebnisse
 Messdaten aus Exp im anhang als Tabelle
 \end{verbatim}
 \section{Einleitung}
-Die Lokalisierung eines Roboters ist eine Problemstellung die uns im modernen, digitalen Alltag ständig begegnet. Ob es der Rasenmähroboter, die Spielzeugdrohne oder gar der mit zig Sensoren
-gespickte Tesla ist, sie alle finden sich in ihrer Umgebung zurecht, oder müssen Hindernissen ausweichen, und das auch noch mit möglichst großer Präzision. Denn wer möchte schon einen 
-unsauber gemähten Rasen, ein Auto was beim automatischen Einparken den Nachbarn touchiert, oder einen Multicopter der im Baum hängen bleibt? 
-Durch eine geschickte Kombination aus Soft- und Hardware lassen sich diese Anwendungen jedoch heutzutage problemlos umsetzen und sind für jedermann zugänglich. 
-Tesla beispielsweise konnte alleine im Jahr 2021 963.000 Fahrzeuge an Kunden ausliefern.\footnote{https://ir.tesla.com/press-release/tesla-q4-2021-vehicle-production-deliveries} 
-Die Techologie ist in unserem Alltag also bereits angekommen. 
-
-
-
+1020 PS auf 2162kg, und von 0 auf 100 km/h in 2,1 Sekunden\footnotemark[1]. Dazu noch ein Level an autonomen Fahren das uns wie von Zauberhand durch den Verkehr bringt
+und die kognitiven Faehigkeiten des Menschen teilweise bereits uebersteigt. Die Rede ist vom Tesla Model S. Ersteres laesst sich durch modernsten Maschinenbau und Elektrotechnik 
+sowie jahrelanger Entwicklung erreichen. Spannender ist da schon das (teil-)autonome Fahren und die Fortbewegung eines 
+zwei Tonnen schweren Fahrzeugs in einer dynamischen Umgebung wie dem Strassenverkehr, ohne einen Unfall zu verursachen oder im Worst-Case Menschen zu verletzen oder gar zu toeten.
+Dass dies nicht passiert spricht einmal fuer das Know-How der Tesla-Inegnieure als auch der Zuverlaessigkeit der verwendeten Technik. In dieser Arbeit wird 
+ein kleiner Einblick in die Technologie der Lokalisierung gegebenen und ein Vergleich angestellt zwischen zwei Methoden, der AMCL- und Odometrie-Lokalisierung.
 
 \section{Wieso brauchen wir Lokalisierung?}
+Man stelle sich folgende Situation vor: Wir stehen mit verbundenen Augen und ohne Gehoer in einem Labyrinth. Wie orientieren wir uns? Und woher wissen wir ob wir gerade in der Kueche oder 
+im Schlafzimmer stehen? Dieses zugegebenermassen etwas konstruierte Beispiel soll verdeutlichen wie es dem Roboter ergeht. Er weiss ohne Sensorik, also das wir beim Menschen
+Sinnesorgane nennen, nichts oder sehr wenig ueber seine Umwelt. Der Roboter muss um seine Aufgaben effizient und schnell erfuellen zu koennen wissen wo er ist und wo sich die Hindernisse um ihn herum befinden.
+Dies leistet die Lokalisierung mithilfe der ihr zugehoerigen Sensoren und Algorithmen. 
 
 \section{Kurze Einführung in den Volksbot und ROS}
-
+In dieser Arbeit verwenden wir das Robot Operating System, kurz \textit{ROS}, und dem 
+Einsatz dessen auf einem Roboter, dem \textit{Volksbot}.
+Der verwendete Roboter ist der \textit{RT3-2} mit zwei passiven Rädern und der \textit{RT-3} mit einem passiven Rad.
+Entwickelt wurden diese vom \textit{Fraunhofer Institut IAIS} aus Sankt Augustin. 
+Die technischen Daten sind wie folgt\footnotemark[4]:\\
+\vspace{-5mm}
+\begin{center}
+\begin{tabular}{| p{5cm} p{5cm} |}
+  \hline
+  Abmessungen & 580x520x315mm (L x B x H) \\
+  Gewicht & 17kg \\
+  
+  Raddurchmesser & 260x85mm (aktive Räder) \\
+   & 200mm (passive Räder) \\
+  Maximale Geschwindigkeit & 2,2 $\frac{m}{s}$ \\
+  
+  Maximale Zuladung & 25kg \\
+  \hline
+\end{tabular} \\
+\end{center}
+Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem als ROS-Plattform verwendeten
+Laptop installiert. Außerdem lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern. 
+Es werden sowohl vorgegebene ROS-Nodes, die uns von Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die die Autoren selbst erstellt beziehungsweise
+geändert haben, verwendet. 
 \section{Odometrie, GMapping und AMCL im Überblick}
-
 \section{Die Funktionsweise der Pfadverfolgung und ihre Güte}
 
 \section{Experimenteller Vergleich der Qualität der Pfadverfolgung bei Verwendung von AMCL-  bzw. Odometrie-Lokalisierung}
 Nun soll betrachtet werden wie genau die Lokalisierungsmethoden einen vorgegebenen Pfad verfolgen. Desweiteren soll ein Vergleich zwischen beiden Methoden angestellt werden. 
 Demnach ist die Lokalisierungsmethode besser, welche in der Verwendung eine geringere Abweichung vom vorgegebenen Pfad aufweist. 
 Wir gaben dem Controller hier einen Pfad vor, welcher mit Hilfe der 3D-Design-Applikation \textit{Blender} so erstellt wurde, dass er sowohl
-gerade Linien als auch weiche und harte Kurven enthält. 
+gerade Linien als auch weiche und harte Kurven enthält.
+
 \begin{figure}[h]
-\caption{Der Pfad, wie er in Blender erstellt wurde. Man erkennt eine Linien-struktur bestehend aus gerade und gekurvten Teilstrecken, die wie eine Autorennstrecke einen geschlossenen Pfad bilden}
-\includegraphics[height = 3cm]{pfadgrafik.png}
+\centering
+\includegraphics[scale = 0.6]{pfadgrafik.png}
+\caption{Der Pfad, wie er in Blender erstellt wurde. Man erkennt eine Linienstruktur bestehend aus gerade und gekurvten Teilstrecken, die wie eine Autorennstrecke einen geschlossenen Pfad bilden}
+\label{fig: MessungExperiment}
 \end{figure}
+
 Start und Ende sind hier der Cursor unten im Bild, Anfangsrichtung ist gerade nach oben. Die verwendete Pfaddatei ist in \verb+catkin_ws+ als 
 \verb+Pfad.dat+ zu finden.
 Dieser Pfad wurde auf dem Boden des Testgeländes mit Wollfäden markiert. Der Controller hat die Koordinaten des erstellten Pfades 
@@ -154,6 +185,20 @@ längeren Pfaden bis zu einem gewissen Grad die Position genau bestimmen.
 
 \section{Zusammenfassung und Ausblick}
 
+\section{Literatur- und Quellenverzeichnis}
+\begin{tabular}[h]{l|c|r}
+Fussnote & Quelle\\
+\hline
+1 & \url{www.tesla.com/de_de/models} \\
+\hline
+2 & \url{robolab.inf.tu-dresden.de/spring/task/odometry/} \\
+\hline
+3 & \url{www-home.htwg-konstanz.de/~bittel/ain_robo/Vorlesung/05_Lokalisierung.pdf} \\ 
+\hline
+4 & \url{https://www.volksbot.de/rt3-de.php} \\ 
+\hline
+5 & tbd \\
+\end{tabular}
 {%\small                   % use small if you need it
 \bibliographystyle{plain}
 \bibliography{paper}       % use a bib-file paper.bib to collect your references

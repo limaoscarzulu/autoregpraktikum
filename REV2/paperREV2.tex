@@ -58,8 +58,6 @@
 \let\@openbib@code\@empty
 \makeatother
 
-
-
 \begin{document}
 
 \title{\Large\bf Abgabe zum Praktikum Mess- und Regelungstechnik \\ \textbf{Revision 1}}
@@ -74,24 +72,8 @@
 
 \maketitle
 
-\textbf{TODO:}
-\begin{verbatim}
-Abstract: Zusammenfassung
-Einleitung: Rando BS das zum Thema hinführt
-Problembeschreibung: Warum ist lokalisierung nötig, wie das lösen (Odom+AMCL)
-General Shit: Was ist unser Roboter, was ist ROS
-Wie funktioiert Odom, mit Mathe und so
-Gmapping kurz vorstellen, wie wir es verwenden
-AMCL vorstellen, wie funktioniert es grob
-Wir haben einen Pfadverfolgungs algo bekommen, wie er GROB funktioniert 
-(Steuergesetzt sagen, macht Linie zw gegebenen Punkten)
-Experimente zur bestimmung der Güte der Pfadverfolgung mit AMCL/Odom 
--> MESSUNGEN UNABHÄNGIG VONEINANDER!!
-Zusammenfassung der Ergebnisse
-Messdaten aus Exp im anhang als Tabelle
-\end{verbatim}
 \section{Einleitung}
-1020 PS auf 2162kg, und von 0 auf 100 km/h in 2,1 Sekunden\footnotemark[1]. Dazu noch ein Level an autonomen Fahren das uns wie von Zauberhand durch den Verkehr bringt
+1020 PS auf 2162kg, und von 0 auf 100 km/h in 2,1 Sekunden\cite{website:tesla}. Dazu noch ein Level an autonomen Fahren das uns wie von Zauberhand durch den Verkehr bringt
 und die kognitiven Faehigkeiten des Menschen teilweise bereits uebersteigt. Die Rede ist vom Tesla Model S. Die enormen Fahrleistungen lassen sich durch modernsten Maschinenbau und Elektrotechnik 
 sowie jahrelanger Entwicklung erreichen. Spannender ist nach Meinung der Autoren schon das (teil-)autonome Fahren und die Fortbewegung eines 
 zwei Tonnen schweren Fahrzeugs in einer dynamischen Umgebung wie dem Strassenverkehr, ohne einen Unfall zu verursachen oder im Worst-Case Menschen zu verletzen oder gar zu toeten.
@@ -108,7 +90,7 @@ in der Umgebung mittels einer Laserscannermessung und anschliessender Berechnung
 In dieser Arbeit wurde das Robot Operating System, kurz \textit{ROS}, auf einem Roboter, dem \textit{Volksbot} verwendet.
 Der verwendete Roboter ist der \textit{RT3-2} mit zwei bzw. einem (\textit{RT-3}) passiven Rad und jeweils zwei angetriebenen Raeder die vorne rechts und links angebracht sind.
 Entwickelt wurden diese vom \textit{Fraunhofer Institut IAIS} aus Sankt Augustin. 
-Die technischen Daten sind wie folgt\footnotemark[4]:\\
+Die technischen Daten sind wie folgt:\\
 \vspace{-5mm}
 \begin{center}
 \begin{tabular}{| p{5cm} p{5cm} |}
@@ -124,12 +106,50 @@ Die technischen Daten sind wie folgt\footnotemark[4]:\\
   \hline
 \end{tabular} \\
 \end{center}
+
+\textit{Daten aus} \cite{website:volksbot} \\
+
 Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem als ROS-Plattform verwendeten
 Laptop installiert. Neben der Steuerung beziehungsweise Regelung ueber \textit{ROS} lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern.
-Das \textit{Robot Operating System} wurde vom \textit{Stanford Institute for Artificial Intelligence} 
+Das \textit{Robot Operating System}  entstand aus dem Bedarf fuer ein Open-Source-Roboter-Framework in der Robotercommunity.
+Es entstand Mitte der 2000er-Jahre aus Projekten an der \textit{Stanford University} wie dem \textit{STanford AI Robot - STAIR}.
+2007 konnte mithilfe von \textit{Willow Garage Inc}, einer amerikanischen Robotikfirma, und derer
+Resourcen die ROS-Konzepte in erste Implementationen umgesetzt werden. Heute hat \textit{ROS} zehntausende Nutzer auf der ganzen Welt,
+die Anwendungen reichen von Hobby-Amateurrobotern bis zu grossen automatisierten Industrieanlagen. 
+\textit{ROS} an sich besteht dabei aus vielen kleinen Programmen die ueber Nachrichten, die \textit{Messages}, miteinander kommunizieren.
+Die Nachrichten werden dabei untereinander direkt verschickt ohne einen zentralen Bus oder aehnliches. Insgesamt
+folgt \textit{ROS} damit einer Graphenarchitektur mit Knoten (englisch \textit{nodes}) und Kanten (\textit{edges}), sie entsprechen den Nachrichten. \cite{quigley2015programming}
 Es werden sowohl vorgegebene ROS-Nodes, die vom Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die die Autoren selbst erstellt beziehungsweise
 geändert haben, verwendet. 
 \section{Odometrie, GMapping und AMCL im Überblick}
+\subsection*{Die Odometrie}
+Die Odometrie errechnet die Bewegung des Roboters ueber die Radgeschwindigkeit und \\ -bewegung 
+des \textit{Volksbot}. Im Zentrum dieser Rechnung stehen die mathematischen Zusammenhaenge im Kreisbogen. 
+Aus \cite{website:dresden} wurde dazu folgende Grafik entnommen:
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 12cm]{kreisbogen.png}
+  \caption{Ein Kreissegment mit verschiedenen eingezeichneten Boegen bei unterschiedlichen Radien. Die Radienlaengen sind an der oberen Kreiskante 
+  aufgetragen. Der Winkel $\alpha$ des Kreissegments ist an der Spitze eingezeichnet}
+  \label{fig: Kreissegment}
+\end{figure}
+
+
+\cite{olson2004primer} stellt die Grundzuege dieses Verfahrens vor. Hierzu betrachte man zuerst folgende 
+Abbildung und die geometrischen Zusammenhaenge:
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 12cm]{odometry.png}
+  \caption{Die Geometrie der Odometrie, aus \cite{olson2004primer}. \textit{OLSON} schreibt dazu: \textit{ Detailed odometry geometry. 
+  We compute the center of the circle P by forcing $d_{left}$ and $d_{right}$ to be two arcs with the same inner angle $\phi$.
+  From this, we can compute the new robot position $(x', y', \theta')$}}
+  \label{fig: Odometrie}
+\end{figure}
+
+
+
 \section{Die Funktionsweise der Pfadverfolgung und ihre Güte}
 
 \section{Experimenteller Vergleich der Qualität der Pfadverfolgung bei Verwendung von AMCL-  bzw. Odometrie-Lokalisierung}
@@ -138,7 +158,7 @@ Demnach ist die Lokalisierungsmethode besser, welche in der Verwendung eine geri
 Wir gaben dem Controller hier einen Pfad vor, welcher mit Hilfe der 3D-Design-Applikation \textit{Blender} so erstellt wurde, dass er sowohl
 gerade Linien als auch weiche und harte Kurven enthält.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[scale = 0.6]{pfadgrafik.png}
 \caption{Der Pfad, wie er in Blender erstellt wurde. Man erkennt eine Linienstruktur bestehend aus gerade und gekurvten Teilstrecken, die einen geschlossenen Pfad bilden}
@@ -185,20 +205,6 @@ längeren Pfaden bis zu einem gewissen Grad die Position genau bestimmen.
 
 \section{Zusammenfassung und Ausblick}
 
-\section{Literatur- und Quellenverzeichnis}
-\begin{tabular}[h]{l|c|r}
-Fussnote & Quelle\\
-\hline
-1 & \url{www.tesla.com/de_de/models} \\
-\hline
-2 & \url{robolab.inf.tu-dresden.de/spring/task/odometry/} \\
-\hline
-3 & \url{www-home.htwg-konstanz.de/~bittel/ain_robo/Vorlesung/05_Lokalisierung.pdf} \\ 
-\hline
-4 & \url{https://www.volksbot.de/rt3-de.php} \\ 
-\hline
-5 & Robot Operating System, The Complete Reference, Volume 4, A. Koubaa 2020 \\
-\end{tabular}
 {%\small                   % use small if you need it
 \bibliographystyle{plain}
 \bibliography{paper}       % use a bib-file paper.bib to collect your references

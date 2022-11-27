@@ -60,7 +60,7 @@
 
 \begin{document}
 
-\title{\Large\bf Abgabe zum Praktikum Mess- und Regelungstechnik \\ \textbf{Revision 1}}
+\title{\Large \bf Abgabe zum Praktikum Mess- und Regelungstechnik \\ \textbf{Revision 1}}
 
 \author{Simon Klüpfel, Lukas Zeller\\
   Robotik und Telematik \\
@@ -80,12 +80,17 @@ zwei Tonnen schweren Fahrzeugs in einer dynamischen Umgebung wie dem Strassenver
 Dass dies nicht passiert spricht einmal fuer das Know-How der Tesla-Ingenieure als auch der Zuverlaessigkeit der verwendeten Technik. In dieser Arbeit wird 
 ein kleiner Einblick in die Technologie der Lokalisierung gegebenen und ein Vergleich angestellt zwischen zwei Methoden, der AMCL- und Odometrie-Lokalisierung.
 
-\section{Wieso brauchen wir Lokalisierung?}
-Der Roboter muss um seine Aufgaben effizient und schnell erfuellen zu koennen wissen wo im Raum er sich befindet und wo sich nicht befahrbare Bereiche um ihn herum befinden.
-Dies leistet die Lokalisierung mithilfe der ihr zugehoerigen Sensoren und Algorithmen. Sie stellt sicher dass Hindernissen ausgewichen wird oder ein vorgegebener Pfad verfolgt wird. 
-Dieser kann sowohl aus der Eigenbewegung des Roboters, in unserem Fall speziell aus den Drehraten und -geschwindigkeiten der Raeder, als auch ueber den veraenderten Abstand zu Objekten 
-in der Umgebung mittels einer Laserscannermessung und anschliessender Berechnung ermittelt werden. 
-
+\section{Zur Lokalisierung}
+Aus \cite{website:lokalisierung}, Folie 5-2, lassen sich drei Grundvoraussetzungen sowie das Ziel fuer unsere Roboterlokalisierung definieren: Er bewegt sich in der Umgebung mittels bekannter Stuerbefehle,
+nimmt seine Umwelt mit Sensoren wahr und hat eine Karte seiner Umgebung zum Abgleich gespeichert. Das Ziel ist eine Positonsabschaetzung zum Zeitpunkt t in X- und Y-Position sowie ein Heading welches
+die Richtung angibt. Als Referenz ist ein in der Umgebung verankertes Koordinatensystem gegeben. Weiter unterscheidet man zum Beginn der Lokalisierung zwischen lokaler und globaler
+Selbstlokalisierung. Im ersten Fall ist die Initialposition des Roboters grob bekannt, das Ziel ist es bei Bewegung des Roboters eine Neuberechnung der Position durchzufuehren,
+dieses Verfahren nennt man \textit{position tracking}. Bei der schwierigeren globalen Selbstlokalisierung kennen wir unsere Initialposition dagegen nicht, sie muss aus der 
+Roboterbewegung und neugewonnenen Sensordaten errechnet werden. Hier kann das \textit{kidnapped robot problem} eine Rolle spielen, bei der der Roboter in Zuge einer nicht abgeschlossenen Lokalisierung
+umgesetzt wird.
+Bei der Sensorik die zur Lageschaetzung verwendet wird unterscheidet man zwischen \textit{propriozeptiven}, d.h. internen, und \textit{exteriozeptiven}, externen, Sensoren. 
+Ersteres misst die lokal am Roboter anfallenden \textit{onboard} \cite{website:robotik} Eigenschaften wie die Drehzahl der Radmotoren oder die Temperatur, die 
+exteriozeptiven Sensoren liefern Messungen aus der Umgebung des Roboters, als Beispiel nennt \cite{website:robotik} Distanzmessungen wie Ultraschall, Laser, oder eine Kameraaufnahme der Umgebung.
 \section{Kurze Einführung in den Volksbot und ROS}
 In dieser Arbeit wurde das Robot Operating System, kurz \textit{ROS}, auf einem Roboter, dem \textit{Volksbot} verwendet.
 Der verwendete Roboter ist der \textit{RT3-2} mit zwei bzw. einem (\textit{RT-3}) passiven Rad und jeweils zwei angetriebenen Raeder die vorne rechts und links angebracht sind.
@@ -115,7 +120,7 @@ Das \textit{Robot Operating System}  entstand aus dem Bedarf fuer ein Open-Sourc
 Es entstand Mitte der 2000er-Jahre aus Projekten an der \textit{Stanford University} wie dem \textit{STanford AI Robot - STAIR}.
 2007 konnte mithilfe von \textit{Willow Garage Inc}, einer amerikanischen Robotikfirma, und derer
 Resourcen die ROS-Konzepte in erste Implementationen umgesetzt werden. Heute hat \textit{ROS} zehntausende Nutzer auf der ganzen Welt,
-die Anwendungen reichen von Hobby-Amateurrobotern bis zu grossen automatisierten Industrieanlagen. 
+die Anwendungen reichen von Amateurrobotern bis zu grossen automatisierten Industrieanlagen. 
 \textit{ROS} an sich besteht dabei aus vielen kleinen Programmen die ueber Nachrichten, die \textit{Messages}, miteinander kommunizieren.
 Die Nachrichten werden dabei untereinander direkt verschickt ohne einen zentralen Bus oder aehnliches. Insgesamt
 folgt \textit{ROS} damit einer Graphenarchitektur mit Knoten (englisch \textit{nodes}) und Kanten (\textit{edges}), sie entsprechen den Nachrichten. \cite{quigley2015programming}

@@ -1,4 +1,6 @@
 \documentclass[11pt,a4paper]{article}
+\DeclareMathSizes{10.95}{13}{10}{10}
+
 \usepackage{bbm,amsthm,amsfonts,amssymb,amsmath,latexsym,epic,eepic}
 \usepackage{marvosym,graphicx,fancyhdr,bbm, hyperref}
 %% \usepackage[dvips]{color}
@@ -19,6 +21,7 @@
 \newcommand{\V}[1]{\mathbf{#1}}
 \newcommand{\norm}[1]{\left | \left | #1 \right | \right |}
 \newcommand{\RR}{\mathbbm{R}}        % set of real numbers
+
 
 
 \renewcommand\floatpagefraction{0.8}
@@ -59,6 +62,7 @@
 \makeatother
 
 \begin{document}
+\noindent
 
 \title{\Large \bf Abgabe zum Praktikum Mess- und Regelungstechnik \\ \textbf{Revision 1}}
 
@@ -81,7 +85,7 @@ Dass dies nicht passiert spricht einmal fuer das Know-How der Tesla-Ingenieure a
 ein kleiner Einblick in die Technologie der Lokalisierung gegebenen und ein Vergleich angestellt zwischen zwei Methoden, der AMCL- und Odometrie-Lokalisierung.
 
 \section{Zur Lokalisierung}
-Aus \cite{website:lokalisierung}, Folie 5-2, lassen sich drei Grundvoraussetzungen sowie das Ziel fuer unsere Roboterlokalisierung definieren: Er bewegt sich in der Umgebung mittels bekannter Stuerbefehle,
+Aus \cite{website:lokalisierung}, Folie 5-2, lassen sich drei Grundvoraussetzungen sowie das Ziel unserer Roboterlokalisierung definieren: Der Roboter bewegt sich in der Umgebung mittels bekannter Stuerbefehle,
 nimmt seine Umwelt mit Sensoren wahr und hat eine Karte seiner Umgebung zum Abgleich gespeichert. Das Ziel ist eine Positonsabschaetzung zum Zeitpunkt t in X- und Y-Position sowie ein Heading welches
 die Richtung angibt. Als Referenz ist ein in der Umgebung verankertes Koordinatensystem gegeben. Weiter unterscheidet man zum Beginn der Lokalisierung zwischen lokaler und globaler
 Selbstlokalisierung. Im ersten Fall ist die Initialposition des Roboters grob bekannt, das Ziel ist es bei Bewegung des Roboters eine Neuberechnung der Position durchzufuehren,
@@ -92,9 +96,12 @@ Bei der Sensorik die zur Lageschaetzung verwendet wird unterscheidet man zwische
 Ersteres misst die lokal am Roboter anfallenden \textit{onboard} \cite{website:robotik} Eigenschaften wie die Drehzahl der Radmotoren oder die Temperatur, die 
 exteriozeptiven Sensoren liefern Messungen aus der Umgebung des Roboters, als Beispiel nennt \cite{website:robotik} Distanzmessungen wie Ultraschall, Laser, oder eine Kameraaufnahme der Umgebung.
 \section{Kurze Einführung in den Volksbot und ROS}
-In dieser Arbeit wurde das Robot Operating System, kurz \textit{ROS}, auf einem Roboter, dem \textit{Volksbot} verwendet.
-Der verwendete Roboter ist der \textit{RT3-2} mit zwei bzw. einem (\textit{RT-3}) passiven Rad und jeweils zwei angetriebenen Raeder die vorne rechts und links angebracht sind.
-Entwickelt wurden diese vom \textit{Fraunhofer Institut IAIS} aus Sankt Augustin. 
+In dieser Arbeit wurde das Robot Operating System, kurz \textit{ROS}, auf einem Roboter, dem \textit{Volksbot} verwendet. Dazu eine kurze Einfuehrung aus \cite{paper:volksbot}: Die Volksbot-Plattform wurde vom Fraunhofer Institut IAIS aus St. Augustin entwickelt.
+Die Plattform besteht aus einer Roboterbaukasten untereinander kompatibler Bauteile, die eine langwierige Prototypenentwicklung zu vermeiden versucht indem sie eine Vielzahl von Varianten anbietet, die sich fuer die
+gewuenschte Anwendung jeweils passgenau zusammenstellen lassen. In Zentrum des Volksbot-Systems steht die Idee einer schnellen und kostenguenstigen Realisierung eines Roboters der sich sowohl fuer Lehr- und Entwicklungszwecke als auch
+fuer die Industrie eignet. 
+Der in dieser Arbeit verwendete Roboter ist der \textit{RT3-2} mit zwei bzw. einem (\textit{RT-3}) passiven Rad und jeweils zwei angetriebenen Raeder die vorne rechts und links angebracht sind.
+Das Kuerzel RT steht dabei fuer \textit{Rough Terrain}. 
 Die technischen Daten sind wie folgt:\\
 \vspace{-5mm}
 \begin{center}
@@ -112,18 +119,19 @@ Die technischen Daten sind wie folgt:\\
 \end{tabular} \\
 \end{center}
 
-\textit{Daten aus} \cite{website:volksbot} \\
+\textit{ aus} \cite{website:volksbot} \\
 
-Auf dem Roboter ist ein Laserscanner sowie Hardware zur Verbindung mit dem als ROS-Plattform verwendeten
-Laptop installiert. Neben der Steuerung beziehungsweise Regelung ueber \textit{ROS} lässt sich der Roboter über einen Joystick, ähnlich eines Gamecontrollers, manuell steuern.
-Das \textit{Robot Operating System}  entstand aus dem Bedarf fuer ein Open-Source-Roboter-Framework in der Robotercommunity.
+Auf dem Roboter ist ein LIDAR-Sensor LMS100 der Firma \textit{SICK} installiert. Er scannt seine Umgebung via eines 905nm-Infrarotlaser 
+mit 25/50Hz und einer Reichweite von 5-20m unter einem Oeffnungswinkel von $270^\circ$ \cite{website:LMS100}. Die Daten werden via Ethernet-Anschluss zu dem als ROS-Plattform verwendeten
+Laptop gesendet. Neben der Steuerung beziehungsweise Regelung ueber \textit{ROS} lässt sich der Roboter via eines Joystick, ähnlich eines Gamecontrollers, manuell steuern.
+Das \textit{Robot Operating System}  stammt aus dem Bedarf fuer ein Open-Source-Roboter-Framework in der Robotercommunity.
 Es entstand Mitte der 2000er-Jahre aus Projekten an der \textit{Stanford University} wie dem \textit{STanford AI Robot - STAIR}.
 2007 konnte mithilfe von \textit{Willow Garage Inc}, einer amerikanischen Robotikfirma, und derer
 Resourcen die ROS-Konzepte in erste Implementationen umgesetzt werden. Heute hat \textit{ROS} zehntausende Nutzer auf der ganzen Welt,
 die Anwendungen reichen von Amateurrobotern bis zu grossen automatisierten Industrieanlagen. 
 \textit{ROS} an sich besteht dabei aus vielen kleinen Programmen die ueber Nachrichten, die \textit{Messages}, miteinander kommunizieren.
 Die Nachrichten werden dabei untereinander direkt verschickt ohne einen zentralen Bus oder aehnliches. Insgesamt
-folgt \textit{ROS} damit einer Graphenarchitektur mit Knoten (englisch \textit{nodes}) und Kanten (\textit{edges}), sie entsprechen den Nachrichten. \cite{quigley2015programming}
+folgt \textit{ROS} damit einer Graphenarchitektur mit Knoten (englisch \textit{nodes}), den Programmen, und Kanten (\textit{edges}), sie entsprechen den Nachrichten. \cite{quigley2015programming}
 Es werden sowohl vorgegebene ROS-Nodes, die vom Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die die Autoren selbst erstellt beziehungsweise
 geändert haben, verwendet. 
 \section{Odometrie, GMapping und AMCL im Überblick}
@@ -135,24 +143,92 @@ Aus \cite{website:dresden} wurde dazu folgende Grafik entnommen:
 \begin{figure}[ht]
   \centering
   \includegraphics[width = 12cm]{kreisbogen.png}
-  \caption{Ein Kreissegment mit verschiedenen eingezeichneten Boegen bei unterschiedlichen Radien. Die Radienlaengen sind an der oberen Kreiskante 
+  \caption{Aus \cite{website:dresden}: Ein Kreissegment mit verschiedenen eingezeichneten Boegen bei unterschiedlichen Radien. Die Radienlaengen sind an der oberen Kreiskante 
   aufgetragen. Der Winkel $\alpha$ des Kreissegments ist an der Spitze eingezeichnet}
   \label{fig: Kreissegment}
 \end{figure}
 
+Dazu betrachten wir die mathematischen Ueberlegungen aus \cite{website:dresden}:
 
-\cite{olson2004primer} stellt die Grundzuege dieses Verfahrens vor. Hierzu betrachte man zuerst folgende 
-Abbildung und die geometrischen Zusammenhaenge:
+Fuer zwei Kreisboegen $d_l$ und $d_r$ mit dem Radius $r_l$ bzw. $r_r$ ueber einen Winkel $\alpha$ gilt:
+
+$\alpha = \frac{d_l}{r_l} = \frac{d_r}{r_r}$ oder auch $d_l = \alpha * r_l, d_r = \alpha * r_r$
+
+Fuer einen Kreisbogen $d_w$ mit dem Radius $r_w = r_r + r_l$ ueber $\alpha$ gilt: 
+
+$\alpha = \frac{d_w}{r_w} = \frac{d_w}{r_r+r_l}$ oder auch $d_w = \alpha * (r_r + r_l)$
+
+Daraus folgt: 
+
+$d_r + d_l = \alpha * r_r + a * r_l = \alpha * (r_r + r_l) = d_w$
+
+$\alpha = \frac{d_w}{r_w} = \frac{d_r+d_l}{r_r + r_l}$
+
+Analog gilt fuer einen Kreisbogen $d_a$ mit $r_a = r_r - r_l$:
+
+$\alpha = \frac{d_a}{r_a} = \frac{d_r-d_l}{r_r-r_l}$
+
+Sei $r_s$ nun der Durchschnitt aus $r_r$ und $r_l$. Sei $d_s$ der Kreisbogen mit Radius $r_s$ ueber $\alpha$. Es gilt:
+
+$r_s = \frac{(r_r + r_l)}{2}$
+
+$d_s = \alpha * r_s = \alpha * \frac{(r_r + r_l)}{2} = \frac{\alpha * r_r + \alpha * r_l}{2} = \frac{d_r + d_l}{2}$
+
+Die Sehne $s$ unter einem Kreisbogen $d_s$ mit dem Radius $r_s$ ueber $\alpha$ hat die Laenge:
+
+$ s = 2 * r_s * sin(\frac{\alpha}{2})$
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width = 12cm]{odometry.png}
-  \caption{Die Geometrie der Odometrie, aus \cite{olson2004primer}. \textit{OLSON} schreibt dazu: \textit{ Detailed odometry geometry. 
-  We compute the center of the circle P by forcing $d_{left}$ and $d_{right}$ to be two arcs with the same inner angle $\phi$.
-  From this, we can compute the new robot position $(x', y', \theta')$}}
-  \label{fig: Odometrie}
+  \includegraphics[width = 12cm]{richtungsaenderung.png}
+  \caption{Aus \cite{website:dresden}: Skizze des Kreissegments mit eingezeichneter Sehne im Kreisbogen der durch die Mitte des Roboters geht. Der Winkel $\alpha$ ist am Ende
+  des Kreisbogens $d_s$ eingezeichnet}
+  \label{fig: Richtungsaenderung}
 \end{figure}
 
+Um nun die Distanz- und Richtungsaenderung ermitteln zu koennen betrachtet man die Sehne s des Kreisbogens $d_s$. Aus \cite{website:dresden}:
+"Bekannt ist der Radabstand $\alpha$, sowie die vom linken bzw. rechten Rad im betrachtetem Intervall zurueckgelegte Strecke $d_l$ und $d_r$. Gesucht 
+ist die zurueckgelegte Strecke $s$ unter dem gefahrenen Kreisbogen $d_s$ sowie die Aenderung des Blickwinkels $\alpha_{Richtungsaenderung}$."
+
+Wir loesen also fuer $\alpha_{Richtungsaenderung}$, $d_S$, und $s$: 
+
+$\alpha = \frac{d_a}{r_a} = \frac{(d_r - d_l)}{r_r - r_l} = \frac{d_r - d_l}{a}$
+
+$d_s = \frac{(d_r + d_l)}{2}$
+
+$\alpha_{Richtungsaenderung} =  \frac{d_s}{r_s}$ bzw. $r_s = \frac{d_s}{\alpha_{Richtungsaenderung}}$
+
+Schlussendlich berechnet sich die Strecke $s$ aus:
+
+$s = 2 * r_s * sin(\frac{\alpha}{2}) = 2 * \frac{d_s}{\alpha}* sin(\frac{\alpha}{2}) = a * \frac{d_r + d_l}{d_r - d_l} * sin(\frac{d_r - d_l}{2a})$
+
+Man beachte den Unterschied zwischen $\alpha$ und $a$. Ausserdem muss der Fall $d_r = d_l$ bzw. $\alpha = 0$ extra betrachtet werden. Aufgrund der Einfachheit 
+dieser Sonderfaelle wird hier aus Platzgruenden nicht extra darauf eingegangen.
+
+\subsection*{Praktische Aspekte der Odometrie}
+
+\cite{olson2004primer} fasst wie folgt zusammen:
+Odometrie liefert gute Ergebnisse in der Koppelnavigation ueber kurze Distanzen, jedoch summieren sich Fehler sehr schnell auf.
+In jeder Iteration der Odometrie enthalten unsere Ergebnisse Fehler und Rauschen in der X- und Y-Richtung als auch in der Ausrichtung $\theta$, dem \textit{Heading}
+des Roboters. Der Fehler im Heading ist der Killer der Genauigkeit, da wir den fehlerbehafteten Wert aus der Berechnung in jeder weiteren Iteration als Grundlage nehmen.
+
+\textit{Im Original: \\
+Odometry can provide good dead-reckoning over short distances, but error accumulates very
+rapidly. At every step, we inject error (noise) into not just x and y, but also $\theta$. The error
+in $\theta$ is the killer, since every error in $\theta$ will be amplified by future iterations.} \vspace{5mm} \\
+
+Weiter nennt \textit{OLSON} drei Probleme in der praktischen Nutzung der Odometrie:
+\begin{enumerate}
+  \item Sensorenfehler (\textit{sensor error}):
+  Die Messwerte fuer $d_l$ und $d_r$ rauschen, da die Radsensoren zur Messung der Drehung und Bewegung keine idealen Ergebnisse liefern
+  \item Rutschen (\textit{slippage}):
+  Der Roboter unterliegt bei der Kurvenfahrt radseitig immer einem Rutschen. Fuer die Odometrie bedeutet dies das man selbst aus angenommmenen perfekten Odometriedaten
+  den realen Pfad nicht ableiten kann
+  \item Fehler im Abschaetzen vom $d_s$ oder des Raddurchmessers:
+  Wir kennen die Mittellinie $d_s$ des Roboters nie perfekt genau. Ausserdem haben die Raeder ebenfalls einen Groessenunterschied. Diese Unterschiede moegen klein 
+  anmuten, fuehren aber dazu dass die Odometrie ueber die Zeit einen Drift in eine Richtung aufweist und sich Kleinstfehler ueber einen lange genugen Intervall zu grossen
+  Abweichungen summieren. 
+\end{enumerate}
 
 
 \section{Die Funktionsweise der Pfadverfolgung und ihre Güte}

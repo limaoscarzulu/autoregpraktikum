@@ -1,5 +1,5 @@
 \documentclass[11pt,a4paper]{article}
-\DeclareMathSizes{10.95}{13}{10}{10}
+\DeclareMathSizes{10.95}{12}{10}{10}
 
 \usepackage{bbm,amsthm,amsfonts,amssymb,amsmath,latexsym,epic,eepic}
 \usepackage{marvosym,graphicx,fancyhdr,bbm, hyperref}
@@ -230,6 +230,19 @@ Weiter nennt \textit{OLSON} drei Probleme in der praktischen Nutzung der Odometr
   Abweichungen summieren. 
 \end{enumerate}
 
+\subsection*{gMapping}
+gMapping ist ein auf \textit{SLAM} basierender Algorithmus. \textit{SLAM} steht fuer \textit{simultaneous localisation and mapping}\cite{website:mathworksSLAM}
+Hierbei lokalisiert sich der Roboter in seiner Umgebung und kartiert diese gleichzeitig. Es braucht keine externe Karte um die Umgebung zu kartieren.
+\cite{raoblackwellgmapping} schreibt dazu: \\
+\textit{ It is
+considered to be a complex problem, because for localization
+a robot needs a consistent map and for acquiring a map a
+robot requires a good estimate of its location. This mutual
+dependency between the pose and the map estimates makes
+the SLAM problem hard and requires searching for a solution
+in a high-dimensional space} \\
+Der gMapping-Algorithmus nutzt zur Loesung des SLAM-Problems einen auf den Satz von Rao-Blackwell basierenden mathematischen Partikel-Filter und LiDAR-Daten\cite{website:openslamgmapping},
+in unserem Experiment die des \textit{LMS100}. Dei einzelnen Partikel stellen jeweils die geschaetzte Position des Roboters dar. 
 
 \section{Die Funktionsweise der Pfadverfolgung und ihre Güte}
 

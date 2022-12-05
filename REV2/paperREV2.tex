@@ -2,7 +2,7 @@
 \DeclareMathSizes{10.95}{12}{10}{10}
 
 \usepackage{bbm,amsthm,amsfonts,amssymb,amsmath,latexsym,epic,eepic}
-\usepackage{marvosym,graphicx,fancyhdr,bbm, hyperref}
+\usepackage{marvosym,graphicx,fancyhdr,bbm, hyperref, mathtools}
 %% \usepackage[dvips]{color}
 \usepackage[rflt]{floatflt}
 \usepackage{colortbl}
@@ -22,7 +22,7 @@
 \newcommand{\norm}[1]{\left | \left | #1 \right | \right |}
 \newcommand{\RR}{\mathbbm{R}}        % set of real numbers
 
-
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
 
 \renewcommand\floatpagefraction{0.8}
 \renewcommand\topfraction{1}
@@ -272,19 +272,49 @@ Gegeben ist ein nichtlinearer Pfad. Wir unterteilen diesen zuerst in lineare Tei
 ein Position bestehend aus $(x,y,\theta)$. $x$ ist die X-Koordinate, $y$ die Y-Koordinate, und $\theta$ unser Heading.
 Das Heading setzt sich aus der Orientierung und Bewegungsrichtung des Roboters zur X-Achse zusammen. Der Vektor $u$ bezeichnet den Bewegungsvektor des Fahrzeugs.
 $l$ ist der Abstand der Fahrzeugmitte zum Pfad als orthogonaler Projektion. $\theta_d$ ist der Winkel des linearisierten Pfades zur X-Achse. Die Winkeldifferenz $\theta$ - $\theta_d$ bezeichnet 
-\cite{INDIVERI2004185} als $\tilde{\theta}$. Die Winkelgeschwindigkeit des Fahrzeugs ist $\omega$.
+\cite{INDIVERI2004185} als $\tilde{\theta}$: 
 
-$\omega$ berechnet sich dabei aus dem allgemeinen Reglergesetz als:
+$\tilde{\theta}(s) = \theta(s) - \theta_d(s)$
 
-$\omega = \frac{u\kappa(s)cos(\tilde{\theta})}{1-l\kappa(s)} - hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-y\tilde{\theta} : h,y > 0$
+Die Winkelgeschwindigkeit des Fahrzeugs ist $\omega$. Sie berechnet sich dabei aus dem allgemeinen Reglergesetz als:
 
-Die Kruemmung ist bei einem linearen Pfad null. 
+$\omega = \frac{u\kappa(s)cos(\tilde{\theta})}{1-l\kappa(s)} - hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-\gamma\tilde{\theta} : h,\gamma > 0$
+
+Die Kruemmung ist bei einem linearen Pfad null:
 
 $\kappa(s) = 0 \forall s$
 
 Daher vereinfacht sich das Reglergesetz zu:
 
-$ \omega = -hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-y\tilde{\theta} : h,y > 0$
+$ \omega = -hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-\gamma\tilde{\theta} : h,\gamma > 0$
+
+Das vereinfachte Reglergesetz garantiert nun asymptotische Konvergenz von $l$ und $\tilde{\theta}$ gegen Null, solange die lineare Geschwindigkeit $u$ nicht asymptotisch
+null wird, also: 
+
+$\lim_{t \to \infty} u(t) \neq 0$
+
+Durch die Achsen des \textit{Volksbots} unterliegt unser Regler einer Stellgroessenbeschraenkung in $\kappa$, da die Achse real nicht beliebig eng eingeschlagen werden kann:
+
+$\abs{\kappa_r} \leq \kappa_r^{max}$
+
+Schlussendlich loesen wir nach h* und $\gamma$ auf und erhalten zunaechst:
+
+$\gamma = 2\alpha u \sqrt{h}$
+
+Fuer h* brauchen wir eine Fallunterscheidung: \\
+Falls:
+$ y_0 = 0, \theta_0 \neq 0$ gilt:
+
+$h^* = \frac{\kappa_r^{max^2}}{\theta_0^2(1+2\alpha)^2}$
+
+Falls:
+$y_0 \neq 0, \forall \theta_0$ gilt: 
+
+$h^* = \frac{1}{2}(-\frac{\theta_0^2}{y_0^2}+\sqrt{\frac{\theta_0^4}{y_0^4}+\frac{4\kappa_r^{max^2}}{y_0^2(1+2\alpha)^2}})$
+
+Somit haben wir unsere beiden \textit{Gains} fuer den Regler bestimmt. Sie sorgen dafuer dass die Kruemmung des gefahrenen Pfades gegen Null konvergiert und sich der Roboter 
+somit gerade am Pfad entlang bewegt. 
+
 
 
 \section{Experimenteller Vergleich der Qualität der Pfadverfolgung bei Verwendung von AMCL-  bzw. Odometrie-Lokalisierung}

@@ -244,7 +244,48 @@ in a high-dimensional space} \\
 Der gMapping-Algorithmus nutzt zur Loesung des SLAM-Problems einen auf den Satz von Rao-Blackwell basierenden mathematischen Partikel-Filter und LiDAR-Daten\cite{website:openslamgmapping},
 in unserem Experiment die des \textit{LMS100}. Dei einzelnen Partikel stellen jeweils die geschaetzte Position des Roboters dar. 
 
+gMapping macht die aus diesen Berechnungen erzeugten Karten in einem \textit{map-Topic} verfuegbar, die dann durch RViz als eine 
+Karte dargestellt werden\cite{website:gmapping}
+
+\subsection*{AMCL}
+AMCL, die \textit{Adaptive Monte Carlo Localization} lokalisiert den Roboter in der Karte. Verwendet wird dafuer erneut ein 
+Filter, der den Monte-Carlo-Algorithmus nutzt um sich in der Karte zurechtzufinden.\cite{website:oreillyamcl}. 
+Der Partikelfilter startet dabei als Punktwolke, und verbessert sich ueber mehrere Interationen mithilfe neuer Messungen, heisst die Anzahl der Punkte geht zurueck,
+bis er schliesslich auf einen Punkt konvergiert. 
+Die Position des Roboters kann durch gleiche oder aehnliche Kartenelemente uneindeutig sein, was sich durch Bewegung des Roboters und 
+damit neugewonnenen Daten auf einen eindeutigen Punkt zurueckfuehren laesst.\cite{fox1999monte}. In \textit{ROS} published AMCL die daraus gewonnene Position im \verb+amcl_pose+-
+Topic, und man kann den Roboter dadurch in RViz auf der Karte verfolgen \cite{website:amcl}.
+
+
 \section{Die Funktionsweise der Pfadverfolgung und ihre Güte}
+
+Zuerst betrachten wir das Modell aus \cite{INDIVERI2004185}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale = 0.3]{model.png}
+  \caption{Aus \cite{INDIVERI2004185}: Das Model zur Pfadverfolgung. Man erkennt ein stilisiertes Fahrzeug und einen Pfad. Ausserdem sind die auftretenden Groessen eingezeichnet}
+  \label{fig: ModelPfadverfolgung}
+  \end{figure}
+
+Gegeben ist ein nichtlinearer Pfad. Wir unterteilen diesen zuerst in lineare Teilstuecke. Unser Roboter hat dabei 
+ein Position bestehend aus $(x,y,\theta)$. $x$ ist die X-Koordinate, $y$ die Y-Koordinate, und $\theta$ unser Heading.
+Das Heading setzt sich aus der Orientierung und Bewegungsrichtung des Roboters zur X-Achse zusammen. Der Vektor $u$ bezeichnet den Bewegungsvektor des Fahrzeugs.
+$l$ ist der Abstand der Fahrzeugmitte zum Pfad als orthogonaler Projektion. $\theta_d$ ist der Winkel des linearisierten Pfades zur X-Achse. Die Winkeldifferenz $\theta$ - $\theta_d$ bezeichnet 
+\cite{INDIVERI2004185} als $\tilde{\theta}$. Die Winkelgeschwindigkeit des Fahrzeugs ist $\omega$.
+
+$\omega$ berechnet sich dabei aus dem allgemeinen Reglergesetz als:
+
+$\omega = \frac{u\kappa(s)cos(\tilde{\theta})}{1-l\kappa(s)} - hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-y\tilde{\theta} : h,y > 0$
+
+Die Kruemmung ist bei einem linearen Pfad null. 
+
+$\kappa(s) = 0 \forall s$
+
+Daher vereinfacht sich das Reglergesetz zu:
+
+$ \omega = -hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-y\tilde{\theta} : h,y > 0$
+
 
 \section{Experimenteller Vergleich der Qualität der Pfadverfolgung bei Verwendung von AMCL-  bzw. Odometrie-Lokalisierung}
 Nun soll betrachtet werden wie genau die Lokalisierungsmethoden einen vorgegebenen Pfad verfolgen. Desweiteren soll ein Vergleich zwischen beiden Methoden angestellt werden. 

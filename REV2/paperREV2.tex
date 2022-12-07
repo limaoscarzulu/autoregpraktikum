@@ -80,28 +80,28 @@
 1020 PS auf 2162kg, und von 0 auf 100 km/h in 2,1 Sekunden\cite{website:tesla}. Dazu noch ein Level an autonomen Fahren das uns wie von Zauberhand durch den Verkehr bringt
 und die kognitiven Faehigkeiten des Menschen teilweise bereits uebersteigt. Die Rede ist vom Tesla Model S. Die enormen Fahrleistungen lassen sich durch modernsten Maschinenbau und Elektrotechnik 
 sowie jahrelanger Entwicklung erreichen. Spannender ist nach Meinung der Autoren schon das (teil-)autonome Fahren und die Fortbewegung eines 
-zwei Tonnen schweren Fahrzeugs in einer dynamischen Umgebung wie dem Strassenverkehr, ohne einen Unfall zu verursachen oder im Worst-Case Menschen zu verletzen oder gar zu toeten.
-Dass dies nicht passiert spricht einmal fuer das Know-How der Tesla-Ingenieure als auch der Zuverlaessigkeit der verwendeten Technik. In dieser Arbeit wird 
+zwei Tonnen schweren Fahrzeugs in einer dynamischen Umgebung wie dem Strassenverkehr, ohne einen Unfall zu verursachen oder im Worst-Case Menschen zu verletzen oder gar zu töten.
+Dass dies nicht passiert spricht einmal fuer das Know-How der Tesla-Ingenieure als auch der Zuverlässigkeit der verwendeten Technik. In dieser Arbeit wird 
 ein kleiner Einblick in die Technologie der Lokalisierung gegebenen und ein Vergleich angestellt zwischen zwei Methoden, der AMCL- und Odometrie-Lokalisierung.
 
 \section{Zur Lokalisierung}
-Aus \cite{website:lokalisierung}, Folie 5-2, lassen sich drei Grundvoraussetzungen sowie das Ziel unserer Roboterlokalisierung definieren: Der Roboter bewegt sich in der Umgebung mittels bekannter Stuerbefehle,
-nimmt seine Umwelt mit Sensoren wahr und hat eine Karte seiner Umgebung zum Abgleich gespeichert. Das Ziel ist eine Positonsabschaetzung zum Zeitpunkt t in X- und Y-Position sowie ein Heading welches
+Aus \cite{website:lokalisierung}, Folie 5-2, lassen sich drei Grundvoraussetzungen sowie das Ziel unserer Roboterlokalisierung definieren: Der Roboter bewegt sich in der Umgebung mittels bekannter Steuerbefehle,
+nimmt seine Umwelt mit Sensoren wahr und hat eine Karte seiner Umgebung zum Abgleich gespeichert. Das Ziel ist eine Positonsabschätzung zum Zeitpunkt t in X- und Y-Position sowie ein Heading welches
 die Richtung angibt. Als Referenz ist ein in der Umgebung verankertes Koordinatensystem gegeben. Weiter unterscheidet man zum Beginn der Lokalisierung zwischen lokaler und globaler
 Selbstlokalisierung. Im ersten Fall ist die Initialposition des Roboters grob bekannt, das Ziel ist es bei Bewegung des Roboters eine Neuberechnung der Position durchzufuehren,
 dieses Verfahren nennt man \textit{position tracking}. Bei der schwierigeren globalen Selbstlokalisierung kennen wir unsere Initialposition dagegen nicht, sie muss aus der 
 Roboterbewegung und neugewonnenen Sensordaten errechnet werden. Hier kann das \textit{kidnapped robot problem} eine Rolle spielen, bei der der Roboter in Zuge einer nicht abgeschlossenen Lokalisierung
 umgesetzt wird.
-Bei der Sensorik die zur Lageschaetzung verwendet wird unterscheidet man zwischen \textit{propriozeptiven}, d.h. internen, und \textit{exteriozeptiven}, externen, Sensoren. 
+In der Sensorik zur Lageschätzung unterscheidet man zwischen \textit{propriozeptiven}, d.h. internen, und \textit{exteriozeptiven}, externen, Sensoren. 
 Ersteres misst die lokal am Roboter anfallenden \textit{onboard} \cite{website:robotik} Eigenschaften wie die Drehzahl der Radmotoren oder die Temperatur, die 
 exteriozeptiven Sensoren liefern Messungen aus der Umgebung des Roboters, als Beispiel nennt \cite{website:robotik} Distanzmessungen wie Ultraschall, Laser, oder eine Kameraaufnahme der Umgebung.
 \section{Kurze Einführung in den Volksbot und ROS}
 In dieser Arbeit wurde das Robot Operating System, kurz \textit{ROS}, auf einem Roboter, dem \textit{Volksbot} verwendet. Dazu eine kurze Einfuehrung aus \cite{paper:volksbot}: Die Volksbot-Plattform wurde vom Fraunhofer Institut IAIS aus St. Augustin entwickelt.
 Die Plattform besteht aus einer Roboterbaukasten untereinander kompatibler Bauteile, die eine langwierige Prototypenentwicklung zu vermeiden versucht indem sie eine Vielzahl von Varianten anbietet, die sich fuer die
-gewuenschte Anwendung jeweils passgenau zusammenstellen lassen. In Zentrum des Volksbot-Systems steht die Idee einer schnellen und kostenguenstigen Realisierung eines Roboters der sich sowohl fuer Lehr- und Entwicklungszwecke als auch
-fuer die Industrie eignet. 
-Der in dieser Arbeit verwendete Roboter ist der \textit{RT3-2} mit zwei bzw. einem (\textit{RT-3}) passiven Rad und jeweils zwei angetriebenen Raeder die vorne rechts und links angebracht sind.
-Das Kuerzel RT steht dabei fuer \textit{Rough Terrain}. 
+gewuenschte Anwendung jeweils passgenau zusammenstellen lassen. In Zentrum des Volksbot-Systems steht die Idee einer schnellen und kostengünstigen Realisierung eines Roboters der sich sowohl für Lehr- und Entwicklungszwecke als auch
+für die Industrie eignet. 
+Der in dieser Arbeit verwendete Roboter ist der \textit{RT3-2} mit zwei bzw. einem (\textit{RT-3}) passiven Rad und jeweils zwei angetriebenen Räder die vorne rechts und links angebracht sind.
+Das Kürzel RT steht dabei für \textit{Rough Terrain}. 
 Die technischen Daten sind wie folgt:\\
 \vspace{-5mm}
 \begin{center}
@@ -121,8 +121,8 @@ Die technischen Daten sind wie folgt:\\
 
 \textit{ aus} \cite{website:volksbot} \\
 
-Auf dem Roboter ist ein LIDAR-Sensor LMS100 der Firma \textit{SICK} installiert. Er scannt seine Umgebung via eines 905nm-Infrarotlaser 
-mit 25/50Hz und einer Reichweite von 5-20m unter einem Öffnungswinkel von $270^\circ$ \cite{website:LMS100}. Die Daten werden via Ethernet-Anschluss zu dem als ROS-Plattform verwendeten
+Auf dem Roboter ist ein LIDAR-Sensor LMS100 der Firma \textit{SICK} installiert. Dieser scannt seine Umgebung via eines 905nm-Infrarotlaser 
+mit 25/50Hz und einer Reichweite von 5-20m unter einem Öffnungswinkel von $270^\circ$ \cite{website:LMS100}. Die Daten werden via Ethernet-Verbindung zu dem als ROS-Plattform verwendeten
 Laptop gesendet. Neben der Steuerung beziehungsweise Regelung über \textit{ROS} lässt sich der Roboter via eines Joystick, ähnlich eines Gamecontrollers, manuell steuern.
 Das \textit{Robot Operating System}  stammt aus dem Bedarf fuer ein Open-Source-Roboter-Framework in der Robotercommunity.
 Es entstand Mitte der 2000er-Jahre aus Projekten an der \textit{Stanford University} wie dem \textit{STanford AI Robot - STAIR}.
@@ -131,8 +131,8 @@ Resourcen die ROS-Konzepte in erste Implementationen umgesetzt werden. Heute hat
 die Anwendungen reichen von Amateurrobotern bis zu großen automatisierten Industrieanlagen. 
 \textit{ROS} an sich besteht dabei aus vielen kleinen Programmen die über Nachrichten, die \textit{Messages}, miteinander kommunizieren.
 Die Nachrichten werden dabei untereinander direkt verschickt ohne einen zentralen Bus oder ähnliches. Insgesamt
-folgt \textit{ROS} damit einer Graphenarchitektur mit Knoten (englisch \textit{nodes}), den Programmen, und Kanten (\textit{edges}), sie entsprechen den Nachrichten. \cite{quigley2015programming}
-Es werden sowohl vorgegebene ROS-Nodes, die vom Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die die Autoren selbst erstellt beziehungsweise
+folgt \textit{ROS} damit einer Graphenarchitektur mit Knoten (englisch \textit{nodes}), den Programmen, und Kanten (\textit{edges}), welche den Nachrichten entsprechen. \cite{quigley2015programming}
+Es werden sowohl vorgegebene ROS-Nodes, die vom Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes welche durch Autoren selbst erstellt beziehungsweise
 geändert haben, verwendet. 
 \section{Odometrie, GMapping und AMCL im Überblick}
 \subsection*{Die Odometrie}
@@ -254,7 +254,7 @@ Weiter nennt \textit{OLSON} drei Probleme in der praktischen Nutzung der Odometr
 \end{enumerate}
 
 \subsection*{gMapping}
-gMapping ist ein auf \textit{SLAM} basierender Algorithmus. \textit{SLAM} steht fuer \textit{simultaneous localisation and mapping}\cite{website:mathworksSLAM}
+gMapping ist ein auf \textit{SLAM} basierender Algorithmus. \textit{SLAM} steht für \textit{simultaneous localisation and mapping}\cite{website:mathworksSLAM}
 Hierbei lokalisiert sich der Roboter in seiner Umgebung und kartiert diese gleichzeitig. Es braucht keine externe Karte um die Umgebung zu kartieren.
 \cite{raoblackwellgmapping} schreibt dazu: \\
 \textit{ It is
@@ -265,18 +265,18 @@ dependency between the pose and the map estimates makes
 the SLAM problem hard and requires searching for a solution
 in a high-dimensional space} \\
 Der gMapping-Algorithmus nutzt zur Lösung des SLAM-Problems einen auf den Satz von Rao-Blackwell basierenden mathematischen Partikel-Filter und LiDAR-Daten\cite{website:openslamgmapping},
-in unserem Experiment die des \textit{LMS100}. Dei einzelnen Partikel stellen jeweils die geschätzte Position des Roboters dar. 
+in unserem Experiment die des \textit{LMS100}. Die einzelnen Partikel stellen jeweils die geschätzte Position des Roboters dar. 
 
-gMapping macht die aus diesen Berechnungen erzeugten Karten in einem \textit{map-Topic} verfügbar, die dann durch RViz als eine 
+Die von uns verwendete gMapping-Implementierung macht die aus diesen Berechnungen erzeugten Karten in einem \textit{map-Topic} verfügbar, die dann durch RViz als eine 
 Karte dargestellt werden\cite{website:gmapping}
 
 \subsection*{AMCL}
-AMCL, die \textit{Adaptive Monte Carlo Localization} lokalisiert den Roboter in der Karte. Verwendet wird dafuer erneut ein 
+AMCL, die \textit{Adaptive Monte Carlo Localization} lokalisiert den Roboter in der Karte. Verwendet wird dafür erneut ein 
 Filter, der den Monte-Carlo-Algorithmus nutzt um sich in der Karte zurechtzufinden.\cite{website:oreillyamcl}. 
-Der Partikelfilter startet dabei als Punktwolke aus vom Algorthmus erachteten möglichen Positionen, und verbessert sich über mehrere Interationen mithilfe neuer Messungen, 
+Der Partikelfilter startet dabei als Punktwolke aus vom Algorthmus als möglichen erachteten Positionen, und verbessert sich über mehrere Interationen mithilfe neuer Messungen, 
 heißt die Anzahl der Punkte geht zurück, bis er schließlich auf einen Punkt konvergiert. 
-Die Position des Roboters kann durch gleiche oder ähnliche Kartenelemente uneindeutig sein, was sich durch Bewegung des Roboters und 
-damit neugewonnenen Daten auf einen eindeutigen Punkt zurückführen lässt.\cite{fox1999monte}. In \textit{ROS} published AMCL die daraus gewonnene Position im \verb+amcl_pose+-
+Jecdoch kann die Position des Roboters kann durch gleiche oder ähnliche Kartenelemente uneindeutig sein, dies lässt sich aber durch Bewegung des Roboters und 
+damit neugewonnenen Daten auf einen eindeutigen Punkt zurückführen.\cite{fox1999monte}. In \textit{ROS} published AMCL die daraus gewonnene Position im \verb+amcl_pose+-
 Topic, und man kann den Roboter dadurch in RViz auf der Karte verfolgen \cite{website:amcl}.
 
 
@@ -378,11 +378,11 @@ Start und Ende sind hier der Cursor unten im Bild, Anfangsrichtung ist gerade na
 \verb+Pfad.dat+ zu finden.
 Dieser Pfad wurde auf dem Boden des Testgeländes mit Wollfäden markiert. Der Controller hat die Koordinaten des erstellten Pfades 
 als relativ interpretiert. Dadurch konnten wir den Roboter am Startpunkt des Pfades platzieren, und in die Geradeaus-Richtung des Pfades orientieren. 
-Dies wurde mithilfe durch ein Maßband, das durch die gerade Mittellinie des Pfades bis zum Roboter führt, und diesen dann symmetrisch teilt, möglichst exakt getan. 
-Dazu wurde im Ursprung des Roboters in der Mitte der Vorderradachse ein Schraubenzieher befestigt, der gerade nach unten zeigt um die Position auf dem 
+Dies wurde mithilfe eines Maßbandes, das durch die gerade Mittellinie des Pfades bis zum Roboter führt, und diesen dann symmetrisch teilt, möglichst exakt getan. 
+Dazu wurde im Ursprung des Roboters in der Mitte der Vorderradachse ein Schraubenzieher befestigt, der gerade nach unten zeigt, um die Position auf dem 
 Boden leichter einsehen zu können. Es ergibt sich dennoch ein systematischer Fehler, da die Startausrichtung und -Platzierung des Roboters nicht perfekt 
 mit der des Pfades am Boden übereinstimmt. Der geschätzte Maximalfehler für die Position des Roboters beträgt 2cm, der der Ausrichtung 2°. 
-\\Dadurch ergibt sich im maximalen Abstand vom Startpunkt ein maximaler Fehler von: \vspace*{-2mm}
+\\Dadurch ergibt sich im maximalen Abstand vom Startpunkt (3m) ein maximaler Fehler von: \vspace*{-2mm}
 
 \begin{equation*}
   0,02m + tan(2^\circ) * 3m = 0,12m

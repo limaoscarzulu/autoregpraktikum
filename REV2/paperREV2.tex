@@ -137,7 +137,8 @@ geändert haben, verwendet.
 \section{Odometrie, GMapping und AMCL im Überblick}
 \subsection*{Die Odometrie}
 Die Odometrie errechnet die Bewegung des Roboters über die Radgeschwindigkeit und \\ -bewegung 
-des \textit{Volksbot}. Im Zentrum dieser Rechnung stehen die mathematischen Zusammenhänge im Kreisbogen. 
+des \textit{Volksbot}. Der Roboter addiert hierzu die Ergebnisse der Berechnungen aus der Radbewegung und -drehung, ausgehend von der Anfangsposition.
+Im Zentrum dieser Rechnung stehen die mathematischen Zusammenhänge im Kreisbogen. 
 Aus \cite{website:dresden} wurde dazu folgende Grafik entnommen:
 
 \begin{figure}[ht]
@@ -153,17 +154,17 @@ Dazu betrachten wir die mathematischen Überlegungen aus \cite{website:dresden}:
 Für zwei Kreisboegen $d_l$ und $d_r$ mit dem Radius $r_l$ bzw. $r_r$ über einen Winkel $\alpha$ gilt:
 
 \begin{equation}\label{eq:one}
-\alpha = \frac{d_l}{r_l} = \frac{d_r}{r_r}~oder~auch:~ d_l = \alpha * r_l, d_r = \alpha * r_r
+\alpha = \frac{d_l}{r_l} = \frac{d_r}{r_r}~oder~auch:~ d_l = \alpha \cdot r_l, d_r = \alpha \cdot r_r
 \end{equation}
 
 Für einen Kreisbogen $d_w$ mit dem Radius $r_w = r_r + r_l$ über $\alpha$ gilt: 
 \begin{equation}\label{eq:two}
-\alpha = \frac{d_w}{r_w} = \frac{d_w}{r_r+r_l}~oder~auch:~d_w = \alpha * (r_r + r_l)
+\alpha = \frac{d_w}{r_w} = \frac{d_w}{r_r+r_l}~oder~auch:~d_w = \alpha \cdot (r_r + r_l)
 \end{equation}
 
 Daraus folgt: 
 \begin{equation}
-d_r + d_l = \alpha * r_r + a * r_l = \alpha * (r_r + r_l) = d_w
+d_r + d_l = \alpha \cdot r_r + a \cdot r_l = \alpha \cdot (r_r + r_l) = d_w
 \end{equation}
 
 \begin{equation}
@@ -171,9 +172,8 @@ d_r + d_l = \alpha * r_r + a * r_l = \alpha * (r_r + r_l) = d_w
 \end{equation}
 
 Analog gilt für einen Kreisbogen $d_a$ mit $r_a = r_r - r_l$:
-
 \begin{equation}
-  \alpha = \frac{d_a}{r_a} = \frac{d_r-d_l}{r_r-r_l}
+\alpha = \frac{d_a}{r_a} = \frac{d_r-d_l}{r_r-r_l}
 \end{equation}
 
 Sei $r_s$ nun der Durchschnitt aus $r_r$ und $r_l$. Sei $d_s$ der Kreisbogen mit Radius $r_s$ über $\alpha$. Es gilt:
@@ -183,13 +183,13 @@ Sei $r_s$ nun der Durchschnitt aus $r_r$ und $r_l$. Sei $d_s$ der Kreisbogen mit
 \end{equation}
 
 \begin{equation}
-  d_s = \alpha * r_s = \alpha * \frac{(r_r + r_l)}{2} = \frac{\alpha * r_r + \alpha * r_l}{2} = \frac{d_r + d_l}{2}
+  d_s = \alpha \cdot r_s = \alpha \cdot \frac{(r_r + r_l)}{2} = \frac{\alpha \cdot r_r + \alpha \cdot r_l}{2} = \frac{d_r + d_l}{2}
 \end{equation}
 
 Die Sehne $s$ unter einem Kreisbogen $d_s$ mit dem Radius $r_s$ über $\alpha$ hat die Länge:
 
 \begin{equation}
-  s = 2 * r_s * sin(\frac{\alpha}{2})
+  s = 2 \cdot r_s \cdot sin(\frac{\alpha}{2})
 \end{equation}
 
 \begin{figure}[ht]
@@ -201,13 +201,13 @@ Die Sehne $s$ unter einem Kreisbogen $d_s$ mit dem Radius $r_s$ über $\alpha$ h
 \end{figure}
 
 Um nun die Distanz- und Richtungsänderung ermitteln zu können betrachtet man die Sehne s des Kreisbogens $d_s$. Aus \cite{website:dresden}:
-"Bekannt ist der Radabstand $\alpha$, sowie die vom linken bzw. rechten Rad im betrachtetem Intervall zurückgelegte Strecke $d_l$ und $d_r$. Gesucht 
+"Bekannt ist der Radabstand $a$, sowie die vom linken bzw. rechten Rad im betrachtetem Intervall zurückgelegte Strecke $d_l$ und $d_r$. Gesucht 
 ist die zurückgelegte Strecke $s$ unter dem gefahrenen Kreisbogen $d_s$ sowie die Änderung des Blickwinkels $\alpha$."
 
 Wir loesen also fuer $\alpha$, $d_S$, und $s$: 
 
 \begin{equation}
-  \alpha = \frac{d_a}{r_a} = \frac{(d_r - d_l)}{r_r - r_l} = \frac{d_r - d_l}{a}
+  \alpha = \frac{(d_r - d_l)}{r_r - r_l} = \frac{d_r - d_l}{a}
 \end{equation}
 
 \begin{equation}
@@ -220,9 +220,9 @@ Wir loesen also fuer $\alpha$, $d_S$, und $s$:
 
 Schlussendlich berechnet sich die Strecke $s$ aus:
 \begin{align}
-  s & = 2 * r_s * sin(\frac{\alpha}{2}) \\
-  & = 2 * \frac{d_s}{\alpha}* sin(\frac{\alpha}{2}) \\
-  & = a * \frac{d_r + d_l}{d_r - d_l} * sin(\frac{d_r - d_l}{2a})
+  s & = 2 \cdot r_s \cdot sin(\frac{\alpha}{2}) \\
+  & = 2 \cdot \frac{d_s}{\alpha}\cdot sin(\frac{\alpha}{2}) \\
+  & = a \cdot \frac{d_r + d_l}{d_r - d_l} \cdot sin(\frac{d_r - d_l}{2a})
 \end{align}
 
 Man beachte den Unterschied zwischen $\alpha$ und $a$. Außerdem muss der Fall $d_r = d_l$ bzw. $\alpha = 0$ extra betrachtet werden. Aufgrund der Einfachheit 
@@ -282,7 +282,7 @@ Topic, und man kann den Roboter dadurch in RViz auf der Karte verfolgen \cite{we
 
 \section{Die Funktionsweise der Pfadverfolgung und ihre Güte}
 
-Zuerst betrachten wir das Modell aus \cite{INDIVERI2004185}.
+Zuerst betrachten wir das Modell aus \cite{INDIVERI2004185}, zu finden unter: Abbildung \ref{fig: ModelPfadverfolgung}.
 
 \begin{figure}[ht]
   \centering
@@ -301,7 +301,7 @@ $l$ ist der Abstand der Fahrzeugmitte zum Pfad als orthogonaler Projektion. $\th
   \tilde{\theta}(s) = \theta(s) - \theta_d(s)
 \end{equation}
 
-Die Winkelgeschwindigkeit des Fahrzeugs ist $\omega$. Sie berechnet sich dabei aus dem allgemeinen Reglergesetz nach \textit{DE WIT} als:
+Die Winkelgeschwindigkeit des Fahrzeugs ist $\omega$. Sie berechnet sich dabei aus dem allgemeinen Reglergesetz nach \textit{DE WIT}\cite{wit1993nonlinear} als:
 
 \begin{equation}
   \omega = \frac{u\kappa(s)cos(\tilde{\theta})}{1-l\kappa(s)} - hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-\gamma\tilde{\theta} : h,\gamma > 0
@@ -434,32 +434,44 @@ die Fehler dieser Informationsquelle durch den Laserscanner und die AMCL-Lokalis
 akzeptabel genau bestimmen.
 
 \section{Zusammenfassung und Ausblick}
-BLABLA
+Wir konnten experimentell zeigen dass AMCL im Vergleich zu der Odometrie über längere Strecken die genauere Möglichkeit zur Lokalisation
+des Roboters, bei uns des \textit{Volksbots}, ist. Dies ist begründet dadurch dass AMCL über stets neue Messungen aus dem Laserscanner  
+verfügt, und deswegen einer deutlich geringeren durchschnittlichen Ungenauigkeit unterliegt im Vergleich zur Odometrie. Bei der Odometrie
+ist weiter davon auszugehen, dass die Ungenauigkeit über längere Strecken als die in \ref*{fig: pfadAMCL} und \ref*{fig: pfadODOM} abgefahrenen Pfade noch weiter
+zunimmt, da sich, wie schon angesprochen, die Fehler aufsummieren und ohne einen neue sicher richtige Ausgangsposition diese Summe stetig größer wird.
+Eine sinnvolle Verwendung der Odometrie wäre diese als Backup oder Ergänzung für den Laserscanner einzusetzen, um Situationen abzufangen in denen der Laserscan nicht durchgeführt werden kann
+oder sehr ungenaue Ergebnisse liefert, wie z.B. an Glasfronten oder transparenten Hindernissen.
+Interessant wäre für die Zukunft noch eine Betrachtung anderer Lokalisierungsmethoden, z.B über Kamerasysteme oder 3D-LiDAR-Scanner, wie sie heute schon
+zur Kartierung von Industrieanlagen oder Kanälen \cite{uniinspector} oder in Fahrzeugen wie den Tesla-Elektroautos \cite{website:tesla} verwendet werden.
+
+
 
 \section{Anhang}
-\caption{Tabelle 1, Abweichung von der Lokalisierungsmethoden von einem Vorgegebenem Pfad in Centimetern}
-\begin{tabular}{c|c|c}
-	\textbf{Haltepunkt} & \textbf{Odometrie} & \textbf{AMCL} \\
+\subsection*{Tabelle 1: \\ Abweichung von der Lokalisierungsmethoden von einem vorgegebenem Pfad in Centimetern}
+\begin{center}
+\begin{tabular}{l|c|r}
+\textbf{Haltepunkt} & \textbf{Odometrie} & \textbf{AMCL} \\
 	\hline
-0&	0&	0&\\
-1&	0&	0&\\
-2&	0&	10&\\
-3&	3,5&	6&\\
-4&	2,5&	5&\\
-5&	4&	4&\\
-6&	18&	0&\\
-7&	28&	4,5&\\
-8&	17&	26&\\
-9&	27&	36&\\
-10&	72&	25&\\
-11&	30&	4&\\
-12&	48&	23&\\
-13&	113&	21&\\
-14&	&	25&\\
+0&	0&	0\\
+1&	0&	0\\
+2&	0&	10\\
+3&	3,5&	6\\
+4&	2,5&	5\\
+5&	4&	4\\
+6&	18&	0\\
+7&	28&	4,5\\
+8&	17&	26\\
+9&	27&	36\\
+10&	72&	25\\
+11&	30&	4\\
+12&	48&	23\\
+13&	113&	21\\
+14& N/A	&	25\\
 \hline
-AVG& 25,9& 12,6& \\
+Durchschnitt& 25,9& 12,6 \\
 
 \end{tabular}
+\end{center}
 
 {%\small                   % use small if you need it
 \bibliographystyle{plain}

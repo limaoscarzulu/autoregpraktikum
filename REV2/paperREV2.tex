@@ -122,61 +122,75 @@ Die technischen Daten sind wie folgt:\\
 \textit{ aus} \cite{website:volksbot} \\
 
 Auf dem Roboter ist ein LIDAR-Sensor LMS100 der Firma \textit{SICK} installiert. Er scannt seine Umgebung via eines 905nm-Infrarotlaser 
-mit 25/50Hz und einer Reichweite von 5-20m unter einem Oeffnungswinkel von $270^\circ$ \cite{website:LMS100}. Die Daten werden via Ethernet-Anschluss zu dem als ROS-Plattform verwendeten
-Laptop gesendet. Neben der Steuerung beziehungsweise Regelung ueber \textit{ROS} lässt sich der Roboter via eines Joystick, ähnlich eines Gamecontrollers, manuell steuern.
+mit 25/50Hz und einer Reichweite von 5-20m unter einem Öffnungswinkel von $270^\circ$ \cite{website:LMS100}. Die Daten werden via Ethernet-Anschluss zu dem als ROS-Plattform verwendeten
+Laptop gesendet. Neben der Steuerung beziehungsweise Regelung über \textit{ROS} lässt sich der Roboter via eines Joystick, ähnlich eines Gamecontrollers, manuell steuern.
 Das \textit{Robot Operating System}  stammt aus dem Bedarf fuer ein Open-Source-Roboter-Framework in der Robotercommunity.
 Es entstand Mitte der 2000er-Jahre aus Projekten an der \textit{Stanford University} wie dem \textit{STanford AI Robot - STAIR}.
 2007 konnte mithilfe von \textit{Willow Garage Inc}, einer amerikanischen Robotikfirma, und derer
 Resourcen die ROS-Konzepte in erste Implementationen umgesetzt werden. Heute hat \textit{ROS} zehntausende Nutzer auf der ganzen Welt,
-die Anwendungen reichen von Amateurrobotern bis zu grossen automatisierten Industrieanlagen. 
-\textit{ROS} an sich besteht dabei aus vielen kleinen Programmen die ueber Nachrichten, die \textit{Messages}, miteinander kommunizieren.
-Die Nachrichten werden dabei untereinander direkt verschickt ohne einen zentralen Bus oder aehnliches. Insgesamt
+die Anwendungen reichen von Amateurrobotern bis zu großen automatisierten Industrieanlagen. 
+\textit{ROS} an sich besteht dabei aus vielen kleinen Programmen die über Nachrichten, die \textit{Messages}, miteinander kommunizieren.
+Die Nachrichten werden dabei untereinander direkt verschickt ohne einen zentralen Bus oder ähnliches. Insgesamt
 folgt \textit{ROS} damit einer Graphenarchitektur mit Knoten (englisch \textit{nodes}), den Programmen, und Kanten (\textit{edges}), sie entsprechen den Nachrichten. \cite{quigley2015programming}
 Es werden sowohl vorgegebene ROS-Nodes, die vom Institut für Robotik und Telematik zur Verfügung gestellt wurden, als auch angepasste Nodes die die Autoren selbst erstellt beziehungsweise
 geändert haben, verwendet. 
 \section{Odometrie, GMapping und AMCL im Überblick}
 \subsection*{Die Odometrie}
-Die Odometrie errechnet die Bewegung des Roboters ueber die Radgeschwindigkeit und \\ -bewegung 
-des \textit{Volksbot}. Im Zentrum dieser Rechnung stehen die mathematischen Zusammenhaenge im Kreisbogen. 
+Die Odometrie errechnet die Bewegung des Roboters über die Radgeschwindigkeit und \\ -bewegung 
+des \textit{Volksbot}. Im Zentrum dieser Rechnung stehen die mathematischen Zusammenhänge im Kreisbogen. 
 Aus \cite{website:dresden} wurde dazu folgende Grafik entnommen:
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width = 12cm]{kreisbogen.png}
-  \caption{Aus \cite{website:dresden}: Ein Kreissegment mit verschiedenen eingezeichneten Boegen bei unterschiedlichen Radien. Die Radienlaengen sind an der oberen Kreiskante 
+  \caption{Aus \cite{website:dresden}: Ein Kreissegment mit verschiedenen eingezeichneten Boegen bei unterschiedlichen Radien. Die Radienlängen sind an der oberen Kreiskante 
   aufgetragen. Der Winkel $\alpha$ des Kreissegments ist an der Spitze eingezeichnet}
   \label{fig: Kreissegment}
 \end{figure}
 
-Dazu betrachten wir die mathematischen Ueberlegungen aus \cite{website:dresden}:
+Dazu betrachten wir die mathematischen Überlegungen aus \cite{website:dresden}:
 
-Fuer zwei Kreisboegen $d_l$ und $d_r$ mit dem Radius $r_l$ bzw. $r_r$ ueber einen Winkel $\alpha$ gilt:
+Für zwei Kreisboegen $d_l$ und $d_r$ mit dem Radius $r_l$ bzw. $r_r$ über einen Winkel $\alpha$ gilt:
 
-$\alpha = \frac{d_l}{r_l} = \frac{d_r}{r_r}$ oder auch $d_l = \alpha * r_l, d_r = \alpha * r_r$
+\begin{equation}\label{eq:one}
+\alpha = \frac{d_l}{r_l} = \frac{d_r}{r_r}~oder~auch:~ d_l = \alpha * r_l, d_r = \alpha * r_r
+\end{equation}
 
-Fuer einen Kreisbogen $d_w$ mit dem Radius $r_w = r_r + r_l$ ueber $\alpha$ gilt: 
-
-$\alpha = \frac{d_w}{r_w} = \frac{d_w}{r_r+r_l}$ oder auch $d_w = \alpha * (r_r + r_l)$
+Für einen Kreisbogen $d_w$ mit dem Radius $r_w = r_r + r_l$ über $\alpha$ gilt: 
+\begin{equation}\label{eq:two}
+\alpha = \frac{d_w}{r_w} = \frac{d_w}{r_r+r_l}~oder~auch:~d_w = \alpha * (r_r + r_l)
+\end{equation}
 
 Daraus folgt: 
+\begin{equation}
+d_r + d_l = \alpha * r_r + a * r_l = \alpha * (r_r + r_l) = d_w
+\end{equation}
 
-$d_r + d_l = \alpha * r_r + a * r_l = \alpha * (r_r + r_l) = d_w$
+\begin{equation}
+\alpha = \frac{d_w}{r_w} = \frac{d_r+d_l}{r_r + r_l}
+\end{equation}
 
-$\alpha = \frac{d_w}{r_w} = \frac{d_r+d_l}{r_r + r_l}$
+Analog gilt für einen Kreisbogen $d_a$ mit $r_a = r_r - r_l$:
 
-Analog gilt fuer einen Kreisbogen $d_a$ mit $r_a = r_r - r_l$:
+\begin{equation}
+  \alpha = \frac{d_a}{r_a} = \frac{d_r-d_l}{r_r-r_l}
+\end{equation}
 
-$\alpha = \frac{d_a}{r_a} = \frac{d_r-d_l}{r_r-r_l}$
+Sei $r_s$ nun der Durchschnitt aus $r_r$ und $r_l$. Sei $d_s$ der Kreisbogen mit Radius $r_s$ über $\alpha$. Es gilt:
 
-Sei $r_s$ nun der Durchschnitt aus $r_r$ und $r_l$. Sei $d_s$ der Kreisbogen mit Radius $r_s$ ueber $\alpha$. Es gilt:
+\begin{equation}
+  r_s = \frac{(r_r + r_l)}{2}
+\end{equation}
 
-$r_s = \frac{(r_r + r_l)}{2}$
+\begin{equation}
+  d_s = \alpha * r_s = \alpha * \frac{(r_r + r_l)}{2} = \frac{\alpha * r_r + \alpha * r_l}{2} = \frac{d_r + d_l}{2}
+\end{equation}
 
-$d_s = \alpha * r_s = \alpha * \frac{(r_r + r_l)}{2} = \frac{\alpha * r_r + \alpha * r_l}{2} = \frac{d_r + d_l}{2}$
+Die Sehne $s$ unter einem Kreisbogen $d_s$ mit dem Radius $r_s$ über $\alpha$ hat die Länge:
 
-Die Sehne $s$ unter einem Kreisbogen $d_s$ mit dem Radius $r_s$ ueber $\alpha$ hat die Laenge:
-
-$ s = 2 * r_s * sin(\frac{\alpha}{2})$
+\begin{equation}
+  s = 2 * r_s * sin(\frac{\alpha}{2})
+\end{equation}
 
 \begin{figure}[ht]
   \centering
@@ -186,29 +200,38 @@ $ s = 2 * r_s * sin(\frac{\alpha}{2})$
   \label{fig: Richtungsaenderung}
 \end{figure}
 
-Um nun die Distanz- und Richtungsaenderung ermitteln zu koennen betrachtet man die Sehne s des Kreisbogens $d_s$. Aus \cite{website:dresden}:
-"Bekannt ist der Radabstand $\alpha$, sowie die vom linken bzw. rechten Rad im betrachtetem Intervall zurueckgelegte Strecke $d_l$ und $d_r$. Gesucht 
-ist die zurueckgelegte Strecke $s$ unter dem gefahrenen Kreisbogen $d_s$ sowie die Aenderung des Blickwinkels $\alpha_{Richtungsaenderung}$."
+Um nun die Distanz- und Richtungsänderung ermitteln zu können betrachtet man die Sehne s des Kreisbogens $d_s$. Aus \cite{website:dresden}:
+"Bekannt ist der Radabstand $\alpha$, sowie die vom linken bzw. rechten Rad im betrachtetem Intervall zurückgelegte Strecke $d_l$ und $d_r$. Gesucht 
+ist die zurückgelegte Strecke $s$ unter dem gefahrenen Kreisbogen $d_s$ sowie die Änderung des Blickwinkels $\alpha$."
 
-Wir loesen also fuer $\alpha_{Richtungsaenderung}$, $d_S$, und $s$: 
+Wir loesen also fuer $\alpha$, $d_S$, und $s$: 
 
-$\alpha = \frac{d_a}{r_a} = \frac{(d_r - d_l)}{r_r - r_l} = \frac{d_r - d_l}{a}$
+\begin{equation}
+  \alpha = \frac{d_a}{r_a} = \frac{(d_r - d_l)}{r_r - r_l} = \frac{d_r - d_l}{a}
+\end{equation}
 
-$d_s = \frac{(d_r + d_l)}{2}$
+\begin{equation}
+  d_s = \frac{(d_r + d_l)}{2}
+\end{equation}
 
-$\alpha_{Richtungsaenderung} =  \frac{d_s}{r_s}$ bzw. $r_s = \frac{d_s}{\alpha_{Richtungsaenderung}}$
+\begin{equation}
+  \alpha =  \frac{d_s}{r_s}~bzw.~ r_s = \frac{d_s}{\alpha}
+\end{equation}
 
 Schlussendlich berechnet sich die Strecke $s$ aus:
+\begin{align}
+  s & = 2 * r_s * sin(\frac{\alpha}{2}) \\
+  & = 2 * \frac{d_s}{\alpha}* sin(\frac{\alpha}{2}) \\
+  & = a * \frac{d_r + d_l}{d_r - d_l} * sin(\frac{d_r - d_l}{2a})
+\end{align}
 
-$s = 2 * r_s * sin(\frac{\alpha}{2}) = 2 * \frac{d_s}{\alpha}* sin(\frac{\alpha}{2}) = a * \frac{d_r + d_l}{d_r - d_l} * sin(\frac{d_r - d_l}{2a})$
-
-Man beachte den Unterschied zwischen $\alpha$ und $a$. Ausserdem muss der Fall $d_r = d_l$ bzw. $\alpha = 0$ extra betrachtet werden. Aufgrund der Einfachheit 
-dieser Sonderfaelle wird hier aus Platzgruenden nicht extra darauf eingegangen.
+Man beachte den Unterschied zwischen $\alpha$ und $a$. Außerdem muss der Fall $d_r = d_l$ bzw. $\alpha = 0$ extra betrachtet werden. Aufgrund der Einfachheit 
+dieser Sonderfälle wird hier aus Platzgründen nicht extra darauf eingegangen.
 
 \subsection*{Praktische Aspekte der Odometrie}
 
 \cite{olson2004primer} fasst wie folgt zusammen:
-Odometrie liefert gute Ergebnisse in der Koppelnavigation ueber kurze Distanzen, jedoch summieren sich Fehler sehr schnell auf.
+Odometrie liefert gute Ergebnisse in der Koppelnavigation über kurze Distanzen, jedoch summieren sich Fehler sehr schnell auf.
 In jeder Iteration der Odometrie enthalten unsere Ergebnisse Fehler und Rauschen in der X- und Y-Richtung als auch in der Ausrichtung $\theta$, dem \textit{Heading}
 des Roboters. Der Fehler im Heading ist der Killer der Genauigkeit, da wir den fehlerbehafteten Wert aus der Berechnung in jeder weiteren Iteration als Grundlage nehmen.
 
@@ -220,13 +243,13 @@ in $\theta$ is the killer, since every error in $\theta$ will be amplified by fu
 Weiter nennt \textit{OLSON} drei Probleme in der praktischen Nutzung der Odometrie:
 \begin{enumerate}
   \item Sensorenfehler (\textit{sensor error}):
-  Die Messwerte fuer $d_l$ und $d_r$ rauschen, da die Radsensoren zur Messung der Drehung und Bewegung keine idealen Ergebnisse liefern
+  Die Messwerte für $d_l$ und $d_r$ rauschen, da die Radsensoren zur Messung der Drehung und Bewegung keine idealen Ergebnisse liefern
   \item Rutschen (\textit{slippage}):
-  Der Roboter unterliegt bei der Kurvenfahrt radseitig immer einem Rutschen. Fuer die Odometrie bedeutet dies das man selbst aus angenommmenen perfekten Odometriedaten
+  Der Roboter unterliegt bei der Kurvenfahrt radseitig immer einem Rutschen. Für die Odometrie bedeutet dies das man selbst aus angenommmenen perfekten Odometriedaten
   den realen Pfad nicht ableiten kann
-  \item Fehler im Abschaetzen vom $d_s$ oder des Raddurchmessers:
-  Wir kennen die Mittellinie $d_s$ des Roboters nie perfekt genau. Ausserdem haben die Raeder ebenfalls einen Groessenunterschied. Diese Unterschiede moegen klein 
-  anmuten, fuehren aber dazu dass die Odometrie ueber die Zeit einen Drift in eine Richtung aufweist und sich Kleinstfehler ueber einen lange genugen Intervall zu grossen
+  \item Fehler im Abschätzen vom $d_s$ oder des Raddurchmessers:
+  Wir kennen die Mittellinie $d_s$ des Roboters nie perfekt genau. Ausserdem haben die Räder ebenfalls einen Größenunterschied. Diese Unterschiede mögen klein 
+  anmuten, führen aber dazu dass die Odometrie über die Zeit einen Drift in eine Richtung aufweist und sich Kleinstfehler über einen lange genugen Intervall zu großen
   Abweichungen summieren. 
 \end{enumerate}
 
@@ -241,19 +264,19 @@ robot requires a good estimate of its location. This mutual
 dependency between the pose and the map estimates makes
 the SLAM problem hard and requires searching for a solution
 in a high-dimensional space} \\
-Der gMapping-Algorithmus nutzt zur Loesung des SLAM-Problems einen auf den Satz von Rao-Blackwell basierenden mathematischen Partikel-Filter und LiDAR-Daten\cite{website:openslamgmapping},
-in unserem Experiment die des \textit{LMS100}. Dei einzelnen Partikel stellen jeweils die geschaetzte Position des Roboters dar. 
+Der gMapping-Algorithmus nutzt zur Lösung des SLAM-Problems einen auf den Satz von Rao-Blackwell basierenden mathematischen Partikel-Filter und LiDAR-Daten\cite{website:openslamgmapping},
+in unserem Experiment die des \textit{LMS100}. Dei einzelnen Partikel stellen jeweils die geschätzte Position des Roboters dar. 
 
-gMapping macht die aus diesen Berechnungen erzeugten Karten in einem \textit{map-Topic} verfuegbar, die dann durch RViz als eine 
+gMapping macht die aus diesen Berechnungen erzeugten Karten in einem \textit{map-Topic} verfügbar, die dann durch RViz als eine 
 Karte dargestellt werden\cite{website:gmapping}
 
 \subsection*{AMCL}
 AMCL, die \textit{Adaptive Monte Carlo Localization} lokalisiert den Roboter in der Karte. Verwendet wird dafuer erneut ein 
 Filter, der den Monte-Carlo-Algorithmus nutzt um sich in der Karte zurechtzufinden.\cite{website:oreillyamcl}. 
-Der Partikelfilter startet dabei als Punktwolke, und verbessert sich ueber mehrere Interationen mithilfe neuer Messungen, heisst die Anzahl der Punkte geht zurueck,
-bis er schliesslich auf einen Punkt konvergiert. 
-Die Position des Roboters kann durch gleiche oder aehnliche Kartenelemente uneindeutig sein, was sich durch Bewegung des Roboters und 
-damit neugewonnenen Daten auf einen eindeutigen Punkt zurueckfuehren laesst.\cite{fox1999monte}. In \textit{ROS} published AMCL die daraus gewonnene Position im \verb+amcl_pose+-
+Der Partikelfilter startet dabei als Punktwolke aus vom Algorthmus erachteten möglichen Positionen, und verbessert sich über mehrere Interationen mithilfe neuer Messungen, 
+heißt die Anzahl der Punkte geht zurück, bis er schließlich auf einen Punkt konvergiert. 
+Die Position des Roboters kann durch gleiche oder ähnliche Kartenelemente uneindeutig sein, was sich durch Bewegung des Roboters und 
+damit neugewonnenen Daten auf einen eindeutigen Punkt zurückführen lässt.\cite{fox1999monte}. In \textit{ROS} published AMCL die daraus gewonnene Position im \verb+amcl_pose+-
 Topic, und man kann den Roboter dadurch in RViz auf der Karte verfolgen \cite{website:amcl}.
 
 
@@ -264,57 +287,78 @@ Zuerst betrachten wir das Modell aus \cite{INDIVERI2004185}.
 \begin{figure}[ht]
   \centering
   \includegraphics[scale = 0.3]{model.png}
-  \caption{Aus \cite{INDIVERI2004185}: Das Model zur Pfadverfolgung. Man erkennt ein stilisiertes Fahrzeug und einen Pfad. Ausserdem sind die auftretenden Groessen eingezeichnet}
+  \caption{Aus \cite{INDIVERI2004185}: Das Model zur Pfadverfolgung. Man erkennt ein stilisiertes Fahrzeug und einen Pfad. Ausserdem sind die auftretenden Größen eingezeichnet}
   \label{fig: ModelPfadverfolgung}
   \end{figure}
 
-Gegeben ist ein nichtlinearer Pfad. Wir unterteilen diesen zuerst in lineare Teilstuecke. Unser Roboter hat dabei 
+Gegeben ist ein nichtlinearer Pfad. Wir unterteilen diesen zuerst in lineare Teilstücke. Unser Roboter hat dabei 
 ein Position bestehend aus $(x,y,\theta)$. $x$ ist die X-Koordinate, $y$ die Y-Koordinate, und $\theta$ unser Heading.
 Das Heading setzt sich aus der Orientierung und Bewegungsrichtung des Roboters zur X-Achse zusammen. Der Vektor $u$ bezeichnet den Bewegungsvektor des Fahrzeugs.
 $l$ ist der Abstand der Fahrzeugmitte zum Pfad als orthogonaler Projektion. $\theta_d$ ist der Winkel des linearisierten Pfades zur X-Achse. Die Winkeldifferenz $\theta$ - $\theta_d$ bezeichnet 
 \cite{INDIVERI2004185} als $\tilde{\theta}$: 
 
-$\tilde{\theta}(s) = \theta(s) - \theta_d(s)$
+\begin{equation}
+  \tilde{\theta}(s) = \theta(s) - \theta_d(s)
+\end{equation}
 
-Die Winkelgeschwindigkeit des Fahrzeugs ist $\omega$. Sie berechnet sich dabei aus dem allgemeinen Reglergesetz als:
+Die Winkelgeschwindigkeit des Fahrzeugs ist $\omega$. Sie berechnet sich dabei aus dem allgemeinen Reglergesetz nach \textit{DE WIT} als:
 
-$\omega = \frac{u\kappa(s)cos(\tilde{\theta})}{1-l\kappa(s)} - hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-\gamma\tilde{\theta} : h,\gamma > 0$
+\begin{equation}
+  \omega = \frac{u\kappa(s)cos(\tilde{\theta})}{1-l\kappa(s)} - hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-\gamma\tilde{\theta} : h,\gamma > 0
+\end{equation}
 
-Die Kruemmung ist bei einem linearen Pfad null:
+Die Krümmung ist bei einem linearen Pfad null:
 
-$\kappa(s) = 0 \forall s$
+\begin{equation}
+  \kappa(s) = 0 \forall s
+\end{equation}
 
 Daher vereinfacht sich das Reglergesetz zu:
 
-$ \omega = -hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-\gamma\tilde{\theta} : h,\gamma > 0$
+\begin{equation}
+  \omega = -hul\frac{sin(\tilde{\theta})}{\tilde{\theta}}-\gamma\tilde{\theta} : h,\gamma > 0
+\end{equation}
+
 
 Das vereinfachte Reglergesetz garantiert nun asymptotische Konvergenz von $l$ und $\tilde{\theta}$ gegen Null, solange die lineare Geschwindigkeit $u$ nicht asymptotisch
 null wird, also: 
 
-$\lim_{t \to \infty} u(t) \neq 0$
+\begin{equation}
+  \lim_{t \to \infty} u(t) \neq 0
+\end{equation}
 
-Durch die Achsen des \textit{Volksbots} unterliegt unser Regler einer Stellgroessenbeschraenkung in $\kappa$, da die Achse real nicht beliebig eng eingeschlagen werden kann:
+Durch die Achsen des \textit{Volksbots} unterliegt unser Regler einer Stellgrößenbeschränkung in $\kappa$, da die Achse real nicht beliebig eng eingeschlagen werden kann:
 
-$\abs{\kappa_r} \leq \kappa_r^{max}$
+\begin{equation}
+  \abs{\kappa_r} \leq \kappa_r^{max}
+\end{equation}
 
-Schlussendlich loesen wir nach h* und $\gamma$ auf und erhalten zunaechst:
+Schlussendlich lösen wir nach h* und $\gamma$ auf und erhalten zunächst:
 
-$\gamma = 2\alpha u \sqrt{h}$
+\begin{equation}
+  \gamma = 2\alpha u \sqrt{h}
+\end{equation}
 
 Fuer h* brauchen wir eine Fallunterscheidung: \\
 Falls:
-$ y_0 = 0, \theta_0 \neq 0$ gilt:
+\begin{equation*}
+  y_0 = 0, \theta_0 \neq 0~~ gilt:
+\end{equation*}
 
-$h^* = \frac{\kappa_r^{max^2}}{\theta_0^2(1+2\alpha)^2}$
+\begin{equation}
+  h^* = \frac{\kappa_r^{max^2}}{\theta_0^2(1+2\alpha)^2}
+\end{equation}
 
 Falls:
-$y_0 \neq 0, \forall \theta_0$ gilt: 
+\begin{equation*}
+  y_0 \neq 0, \forall \theta_0~~ gilt:
+\end{equation*}
+\begin{equation}
+  h^* = \frac{1}{2}\left(-\frac{\theta_0^2}{y_0^2} + \sqrt{ \frac{\theta_0^4}{y_0^4}+ \frac {4\kappa_r^{max^2}} {y_0^2(1+2\alpha)^2} } \right)
+\end{equation}
 
-$h^* = \frac{1}{2}(-\frac{\theta_0^2}{y_0^2}+\sqrt{\frac{\theta_0^4}{y_0^4}+\frac{4\kappa_r^{max^2}}{y_0^2(1+2\alpha)^2}})$
-
-Somit haben wir unsere beiden \textit{Gains} fuer den Regler bestimmt. Sie sorgen dafuer dass die Kruemmung des gefahrenen Pfades gegen Null konvergiert und sich der Roboter 
+Somit haben wir unsere beiden \textit{Gains} für den Regler bestimmt. Sie sorgen dafür dass die Krümmung des gefahrenen Pfades gegen Null konvergiert und sich der Roboter 
 somit gerade am Pfad entlang bewegt. 
-
 
 
 \section{Experimenteller Vergleich der Qualität der Pfadverfolgung bei Verwendung von AMCL-  bzw. Odometrie-Lokalisierung}
@@ -338,35 +382,56 @@ Dies wurde mithilfe durch ein Maßband, das durch die gerade Mittellinie des Pfa
 Dazu wurde im Ursprung des Roboters in der Mitte der Vorderradachse ein Schraubenzieher befestigt, der gerade nach unten zeigt um die Position auf dem 
 Boden leichter einsehen zu können. Es ergibt sich dennoch ein systematischer Fehler, da die Startausrichtung und -Platzierung des Roboters nicht perfekt 
 mit der des Pfades am Boden übereinstimmt. Der geschätzte Maximalfehler für die Position des Roboters beträgt 2cm, der der Ausrichtung 2°. 
-\\Dadurch ergibt sich im maximalen Abstand vom Startpunkt ein maximaler Fehler von: \\
-$
-0,02m + tan(2^\circ) * 3m = 0,12m
-$                                                          \\ 
+\\Dadurch ergibt sich im maximalen Abstand vom Startpunkt ein maximaler Fehler von: \vspace*{-2mm}
+
+\begin{equation*}
+  0,02m + tan(2^\circ) * 3m = 0,12m
+\end{equation*}
+
 An allen anderen Orten ist der systematische Fehler durch den geringeren Abstand vom Startpunkt kleiner.
 Nachdem der Roboter platziert wurde, wurde ein Node gestartet das den benannten Pfad abfährt, und dabei alle 2 Sekunden anhält, sodass seine Position 
 auf dem Boden markiert werden kann. Dies wird für beide Lokalisierungsmethoden durchgeführt. Danach wird der senkrechte Abstand jedes Punktes 
 zum markierten Pfad gemessen und in einer Tabelle eingetragen. Die Messergebnisse sind in Anhang\footnote{Siehe Tabelle 1} einzusehen.
 
 \section{Beschreibung der Ergebnisse}
-Der auf dem Boden markierte Pfad und die markierten Punkte, an denen der Roboter anhielt. Diese wurden jeweils auf einem Bild in Blau bei der Pfadverfolgung 
+
+Wir betrachten die Roboterpfade in der Realität auf dem Boden des Informatikinstitut-Gebäudes:
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale = 0.9]{pfadAMCL.png}
+  \caption{Der auf dem Boden markierte Pfad und die in blau markierten Punkte, an denen der Roboter anhielt. Sie wurden durchnummiert von 0 bis 14.
+   Verwendet wurde hier AMCL}
+  \label{fig: pfadAMCL}
+  \end{figure}
+
+  \begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.9]{pfadODOM.png}
+    \caption{Der auf dem Boden markierte Pfad und die in rot markierten Punkte, an denen der Roboter anhielt. Diese wurden durchnummiert von 0 bis 13.
+     Verwendet wurde hier die Odometrie}
+    \label{fig: pfadODOM}
+    \end{figure}
+Diese wurden jeweils auf einem Bild in Blau bei der Pfadverfolgung 
 unter Verwendung von AMCL, und in Rot bei der Verwendung von Odometrie, zusätzlich zur besseren Sicht nachbearbeitet, eingekreist und mit der jeweiligen Nummer 
 des Anhaltens gekennzeichnet, startend bei 0 für die Initialposition.
 Man beobachtet das der Pfad anfangs, bis etwa Punkt 7, mit beiden Lokalisierungsmethoden etwa gleich gut verfolgt wird. Der Durchschnitt der Abweichungen vom Pfad 
 von Haltepunkt 1 bis zu Haltepunkt 7 liegt bei Odometrie bei 8cm, bei AMCL 4,2cm. Die folgenden Punkte zeigen bei beiden Lokalisierungsmethoden eine deutlich 
 größere Abweichung auf: Punkte 8-13 bei der Verwendung von Odometrie haben eine durchschnittliche Abweichung von 51,2cm, bei der Verwendung von AMCL ist bei den 
 Punkten 8-14 eine durchschnittliche Abweichung von 22,9cm aufgetreten. Hierbei ist zu bemerken dass durch das beiden Ansätze in der Realität stark 
-verschiedene Pfade verfolgt wurden (siehe Abbildung) und es dazu kam dass AMCL einen längeren Weg zurückgelegt hat, und somit einen Haltepunkt mehr in der Messtabelle 
+verschiedene Pfade verfolgt wurden (man betrachte die Abbildungen) und es dazu kam dass AMCL einen längeren Weg zurückgelegt hat, und somit einen Haltepunkt mehr in der Messtabelle 
 aufweist als Odometrie.  Anhand der Markierungen auf dem Boden erkennt man auch dass der Odometrie-Ansatz sich nach Haltepunkt 7 durchgehend auf einer Seite des 
 zu verfolgenden Pfades befindet, und immer weiter in diese Richtung von diesem abdriftet, während der AMCL Ansatz die Seite wechselt, in welche der Positionsfehler vorliegt.
 
 \section{Diskussion und Auswertung der Fahrtwege unter AMCL und Odometrie}
 Die durchschnittliche Abweichung aller Fehlerpunkte von AMCL liegt bei 12,6cm, bei der Odometrie sind es 25,9cm. Zu Beginn der Verfolgung des Pfades lagen beide Methoden 
-etwa gleich nahe am Zielpfad, jedoch fing die Odometrie-Lokalisation  ab der ca. Hälfte des Pfades an eine immer größer werdende Abweichung vom Zielpfad aufzubauen bis 
+etwa gleich nahe am Zielpfad, jedoch fing die Odometrie-Lokalisation  ab circa der Hälfte des Pfades an eine immer größer werdende Abweichung vom Zielpfad aufzubauen bis 
 zu einem maximal gemessenem Fehler von 1,13m, während bei AMCL keine größere Pfadabweichung als 36cm gemessen wurde. Das bereits beschriebene Abdriften der 
 Haltepunkte des Odometrie Ansatz lässt darauf schließen das die sich akkumulierenden Fehler in den Radumdrehungen, welche das alleinige Lokalisierungsmerkmal 
-der Odometrie ist, einen Drift in der Positionierung verursachen, was bewirkt das Odometrie für eine Lokalisierung auf Pfaden, die nicht kurz sind, keine der Realität 
-akkuraten Ergebnisse liefern kann. Da AMCL nicht allein auf die Radumdrehungen angewiesen ist, kann es die Fehler dieser Informationsquelle ausgleichen und so auch auf 
-längeren Pfaden bis zu einem gewissen Grad die Position genau bestimmen.
+der Odometrie ist, einen Drift in der Positionierung verursachen, was bewirkt das Odometrie für eine Lokalisierung auf Pfaden, die nicht so kurz sind, dass sich die
+aufsummierten Fehler nicht gravierend auswirken, keine der Realität akkuraten Ergebnisse liefern kann. Da AMCL nicht allein auf die Radumdrehungen angewiesen ist, kann es 
+die Fehler dieser Informationsquelle durch den Laserscanner und die AMCL-Lokalisierung ausgleichen und so auch auf längeren Pfaden bis zu einem gewissen Grad die Position 
+akzeptabel genau bestimmen.
 
 \section{Zusammenfassung und Ausblick}
 
